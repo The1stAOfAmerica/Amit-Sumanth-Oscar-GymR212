@@ -19,8 +19,9 @@ addObj      11   2   THICC_TABLE
 addObj      19  6   WHITEBOARD
 addObj      19  2   RUG
 addObj      0   11  KIYOI_DESK
+addActor    3   3
 
-setTerrain      3   3   NONE //angad
+//setTerrain      3   3   NONE //angad
 setTerrain      14  11  NONE //brady
 
 setTerrain		0	14	WALL_TOP
@@ -106,8 +107,6 @@ unwalkable		16	0
 unwalkable		17	0
 unwalkable		18	0
 unwalkable		19	0
-unwalkable      2   2
-unwalkable      3   2
 
 
 

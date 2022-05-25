@@ -23,7 +23,8 @@ public class IntroScreen extends AbstractScreen {
 
     @Override
     public void render(float delta) {
-        BitmapFont font1 = new BitmapFont(Gdx.files.internal("res/font/u02KYIgXq4iAjKR8gUI2yuqK.ttf.fnt"));
+        BitmapFont font1 = new BitmapFont(Gdx.files.internal("res/font/u02KYIgXq4iAjKR8gUI2yuqK.ttf.fnt")); //width/15-5
+//        BitmapFont font1 = new BitmapFont(Gdx.files.internal("res/font/5nfqMh1X9CNnhXyL6dnGuWIY.ttf.fnt"));
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         getApp().batch.begin();
@@ -70,7 +71,6 @@ public class IntroScreen extends AbstractScreen {
                     new Action(){
                         @Override
                         public void action() {
-                            System.out.println("test");
                         }
                     });
         }

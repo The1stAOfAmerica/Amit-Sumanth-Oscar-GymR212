@@ -1,14 +1,25 @@
 package com.r212.pokemon.controller;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.graphics.Color;
+import com.r212.pokemon.PokemonGame;
 import com.r212.pokemon.dialogue.ChoiceDialogueNode;
 import com.r212.pokemon.dialogue.Dialogue;
 import com.r212.pokemon.dialogue.DialogueNode;
 import com.r212.pokemon.dialogue.DialogueTraverser;
 import com.r212.pokemon.dialogue.LinearDialogueNode;
+import com.r212.pokemon.screen.AbstractScreen;
+import com.r212.pokemon.screen.AngadBattleScreen;
+import com.r212.pokemon.screen.transition.FadeInTransition;
+import com.r212.pokemon.screen.transition.FadeOutTransition;
 import com.r212.pokemon.ui.DialogueBox;
 import com.r212.pokemon.ui.OptionBox;
+import com.r212.pokemon.util.Action;
+
+import static com.r212.pokemon.screen.AngadBattleScreen.angad_defeated;
+
 
 /**
  * Controller for the game's dialogue system.
@@ -20,7 +31,8 @@ public class DialogueController extends InputAdapter {
 	private DialogueTraverser traverser;
 	private DialogueBox dialogueBox;
 	private OptionBox optionBox;
-	
+	PokemonGame game;
+
 	public DialogueController(DialogueBox box, OptionBox optionBox) {
 		this.dialogueBox = box;
 		this.optionBox = optionBox;
@@ -37,10 +49,10 @@ public class DialogueController extends InputAdapter {
 	@Override
 	public boolean keyUp(int keycode) {
 		if (optionBox.isVisible()) {
-			if (keycode == Keys.UP) {
+			if (keycode == Keys.UP || keycode == Keys.W) {
 				optionBox.moveUp();
 				return true;
-			} else if (keycode == Keys.DOWN) {
+			} else if (keycode == Keys.DOWN || keycode == Keys.S) {
 				optionBox.moveDown();
 				return true;
 			}
@@ -79,10 +91,25 @@ public class DialogueController extends InputAdapter {
 			if (nextNode instanceof ChoiceDialogueNode) {
 				optionBox.setVisible(true);
 			}
+
+		}
+		if (!angad_defeated && dialogueBox.isFinished() && traverser != null && Gdx.input.isKeyJustPressed(Keys.ENTER)){
+			game.startTransition(
+					game.getGameScreen(),
+					new AngadBattleScreen(game),
+					new FadeOutTransition(0.5f, Color.BLACK, game.getTweenManager(), game.getAssetManager()),
+					new FadeInTransition(0.5f, Color.BLACK, game.getTweenManager(), game.getAssetManager()),
+					new Action(){
+						@Override
+						public void action() {
+							System.out.println("STATUS UPDATE: A fight with Angad has started");
+						}
+					});
 		}
 	}
 	
-	public void startDialogue(Dialogue dialogue) {
+	public void startDialogue(Dialogue dialogue, PokemonGame game) {
+		this.game = game;
 		traverser = new DialogueTraverser(dialogue);
 		dialogueBox.setVisible(true);
 		
@@ -90,6 +117,9 @@ public class DialogueController extends InputAdapter {
 		if (nextNode instanceof LinearDialogueNode) {
 			LinearDialogueNode node = (LinearDialogueNode)nextNode;
 			dialogueBox.animateText(node.getText());
+
+
+
 		}
 		if (nextNode instanceof ChoiceDialogueNode) {
 			ChoiceDialogueNode node = (ChoiceDialogueNode)nextNode;
@@ -99,12 +129,12 @@ public class DialogueController extends InputAdapter {
 				optionBox.addOption(s);
 			}
 		}
+
 	}
 	
 	private void progress(int index) {
 		optionBox.setVisible(false);
 		DialogueNode nextNode = traverser.getNextNode(index);
-		
 		if (nextNode instanceof LinearDialogueNode) {
 			LinearDialogueNode node = (LinearDialogueNode)nextNode;
 			dialogueBox.animateText(node.getText());

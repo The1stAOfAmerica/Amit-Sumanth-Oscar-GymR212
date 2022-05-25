@@ -47,7 +47,7 @@ public class LimitedWalkingBehavior extends ActorBehavior {
 			int directionIndex = random.nextInt(DIRECTION.values().length);
 			DIRECTION moveDirection = DIRECTION.values()[directionIndex];
 			if (this.moveDelta.x+moveDirection.getDX() > limEast || -(this.moveDelta.x+moveDirection.getDX()) > limWest || this.moveDelta.y+moveDirection.getDY() > limNorth || -(this.moveDelta.y+moveDirection.getDY()) > limSouth) {
-				getActor().reface(moveDirection);
+//				getActor().reface(moveDirection);
 				currentWaitTime = calculateWaitTime();
 				timer = 0f;
 				return;

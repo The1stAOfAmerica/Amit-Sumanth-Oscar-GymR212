@@ -44,16 +44,16 @@ public class ActorMovementController extends InputAdapter {
 		}
 		
 		// update arrow key pressing
-		if (keycode == Keys.UP) {
+		if (keycode == Keys.UP || keycode == Keys.W) {
 			directionPress[DIRECTION.NORTH.ordinal()] = true;
 		}
-		if (keycode == Keys.DOWN) {
+		if (keycode == Keys.DOWN || keycode == Keys.S) {
 			directionPress[DIRECTION.SOUTH.ordinal()] = true;
 		}
-		if (keycode == Keys.LEFT) {
+		if (keycode == Keys.LEFT || keycode == Keys.A) {
 			directionPress[DIRECTION.WEST.ordinal()] = true;
 		}
-		if (keycode == Keys.RIGHT) {
+		if (keycode == Keys.RIGHT || keycode == Keys.D) {
 			directionPress[DIRECTION.EAST.ordinal()] = true;
 		}
 		return false;
@@ -76,16 +76,16 @@ public class ActorMovementController extends InputAdapter {
 		}
 		
 		// update arrow key pressing// update 
-		if (keycode == Keys.UP) {
+		if (keycode == Keys.UP || keycode == Keys.W) {
 			releaseDirection(DIRECTION.NORTH);
 		}
-		if (keycode == Keys.DOWN) {
+		if (keycode == Keys.DOWN || keycode == Keys.S) {
 			releaseDirection(DIRECTION.SOUTH);
 		}
-		if (keycode == Keys.LEFT) {
+		if (keycode == Keys.LEFT || keycode == Keys.A) {
 			releaseDirection(DIRECTION.WEST);
 		}
-		if (keycode == Keys.RIGHT) {
+		if (keycode == Keys.RIGHT || keycode == Keys.D) {
 			releaseDirection(DIRECTION.EAST);
 		}
 		return false;

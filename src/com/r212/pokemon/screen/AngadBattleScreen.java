@@ -1,8 +1,6 @@
 package com.r212.pokemon.screen;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
-
+import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -30,22 +28,31 @@ import com.r212.pokemon.screen.renderer.BattleRenderer;
 import com.r212.pokemon.screen.renderer.EventQueueRenderer;
 import com.r212.pokemon.screen.transition.FadeInTransition;
 import com.r212.pokemon.screen.transition.FadeOutTransition;
-import com.r212.pokemon.ui.DetailedStatusBox;
-import com.r212.pokemon.ui.DialogueBox;
-import com.r212.pokemon.ui.MoveSelectBox;
-import com.r212.pokemon.ui.OptionBox;
-import com.r212.pokemon.ui.StatusBox;
-
-import aurelienribon.tweenengine.TweenManager;
+import com.r212.pokemon.ui.*;
 import com.r212.pokemon.util.Action;
+
+import java.util.ArrayDeque;
+import java.util.Queue;
+
+import static com.r212.pokemon.battle.Battle.STATE.WIN;
 
 /**
  * @author r212
  */
-public class BattleScreen extends AbstractScreen implements BattleEventPlayer {
+public class AngadBattleScreen extends AbstractScreen implements BattleEventPlayer {
 
 	/* Controller */
 	private BattleScreenController controller;
+
+	public boolean isAngad_defeated() {
+		return angad_defeated;
+	}
+
+	public void setAngad_defeated(boolean angad_defeated) {
+		this.angad_defeated = angad_defeated;
+	}
+
+	public static boolean angad_defeated;
 
 	/* Event system */
 	private BattleEvent currentEvent;
@@ -85,7 +92,7 @@ public class BattleScreen extends AbstractScreen implements BattleEventPlayer {
 	private boolean uiDebug = false;
 	private boolean battleDebug = true;
 
-	public BattleScreen(PokemonGame app) {
+	public AngadBattleScreen(PokemonGame app) {
 		super(app);
 		gameViewport = new ScreenViewport();
 		batch = new SpriteBatch();
@@ -134,6 +141,7 @@ public class BattleScreen extends AbstractScreen implements BattleEventPlayer {
 	@Override
 	public void update(float delta) {
 		/* DEBUG */
+		if (battle.getState() == WIN) angad_defeated = true;
 		if (Gdx.input.isKeyJustPressed(Keys.F9)) {
 			uiDebug = !uiDebug;
 			uiStage.setDebugAll(uiDebug);
@@ -141,19 +149,19 @@ public class BattleScreen extends AbstractScreen implements BattleEventPlayer {
 		if (Gdx.input.isKeyJustPressed(Keys.F10)) {
 			battleDebug = !battleDebug;
 		}
-		if(Gdx.input.isKeyJustPressed(Keys.F5)) {
-			getApp().startTransition(
-					this,
-					getApp().getGameScreen(),
-					new FadeOutTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
-					new FadeInTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
-					new Action(){
-						@Override
-						public void action() {
-							System.out.println("test");
-						}
-					});
-		}
+//		if(Gdx.input.isKeyJustPressed(Keys.F5)) {
+//			getApp().startTransition(
+//					this,
+//					getApp().getGameScreen(),
+//					new FadeOutTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
+//					new FadeInTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
+//					new Action(){
+//						@Override
+//						public void action() {
+//							System.out.println("test");
+//						}
+//					});
+//		}
 
 		while (currentEvent == null || currentEvent.finished()) { // no active event
 			if (queue.peek() == null) { // no event queued up
@@ -165,7 +173,7 @@ public class BattleScreen extends AbstractScreen implements BattleEventPlayer {
 					}
 				} else if (battle.getState() == STATE.READY_TO_PROGRESS) {
 					controller.restartTurn();
-				} else if (battle.getState() == STATE.WIN) {
+				} else if (battle.getState() == WIN) {
 					getApp().setScreen(getApp().getGameScreen());
 				} else if (battle.getState() == STATE.LOSE) {
 					getApp().setScreen(getApp().getGameScreen());

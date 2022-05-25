@@ -28,10 +28,19 @@ public class InfoScreen extends AbstractScreen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         getApp().batch.begin();
-        font1.draw(getApp().batch, "Helpful Tips", Gdx.graphics.getWidth()/5, Gdx.graphics.getHeight() * .9f);
-        getApp().font.draw(getApp().batch, "Shift: Run", 25+Gdx.graphics.getWidth()/6, Gdx.graphics.getHeight() * .7f);
-        getApp().font.draw(getApp().batch, "F1: Bike Mode :D", 25+Gdx.graphics.getWidth() /6, Gdx.graphics.getHeight() * .5f);
-        getApp().font.draw(getApp().batch, "Press enter to continue", Gdx.graphics.getWidth()/5, Gdx.graphics.getHeight() * .25f);
+        font1.draw(getApp().batch, "Helpful Tips", Gdx.graphics.getWidth()/6, Gdx.graphics.getHeight() * .9f);
+        getApp().font.draw(getApp().batch, "Shift: Run", Gdx.graphics.getWidth()/6, Gdx.graphics.getHeight() * .7f);
+        getApp().font.draw(getApp().batch, "Enter: Interact", Gdx.graphics.getWidth() /6, Gdx.graphics.getHeight() * .6f);
+        getApp().font.draw(getApp().batch, "F1: Bike Mode :)", Gdx.graphics.getWidth() /6, Gdx.graphics.getHeight() * .5f);
+        getApp().font.draw(getApp().batch, "Press enter to continue", Gdx.graphics.getWidth()/6, Gdx.graphics.getHeight() * .25f);
+
+        getApp().font.draw(getApp().batch, "W", Gdx.graphics.getWidth()-125, Gdx.graphics.getHeight() * .6f);
+        getApp().font.draw(getApp().batch, "A", Gdx.graphics.getWidth()-175, Gdx.graphics.getHeight() * .5f);
+        getApp().font.draw(getApp().batch, "S", Gdx.graphics.getWidth()-125, Gdx.graphics.getHeight() * .5f);
+        getApp().font.draw(getApp().batch, "D", Gdx.graphics.getWidth()-75, Gdx.graphics.getHeight() * .5f);
+        getApp().font.draw(getApp().batch, "arrow keys too", Gdx.graphics.getWidth()-231, Gdx.graphics.getHeight() * .4f);
+
+
         getApp().batch.end();
     }
 
@@ -71,7 +80,8 @@ public class InfoScreen extends AbstractScreen {
                     new Action(){
                         @Override
                         public void action() {
-                            System.out.println("test");
+                            System.out.println("STATUS UPDATE: Player has entered the realm of R212");
+
                         }
                     });
         }

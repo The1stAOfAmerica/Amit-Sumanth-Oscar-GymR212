@@ -50,7 +50,8 @@ public class World implements ActorObserver {
 		map.getTile(a.getX(), a.getY()).setActor(a);
 		actors.add(a);
 	}
-	
+
+
 	public void addActor(Actor a, ActorBehavior b) {
 		addActor(a);
 		brains.put(a, b);

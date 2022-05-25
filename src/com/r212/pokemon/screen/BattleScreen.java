@@ -141,19 +141,19 @@ public class BattleScreen extends AbstractScreen implements BattleEventPlayer {
 		if (Gdx.input.isKeyJustPressed(Keys.F10)) {
 			battleDebug = !battleDebug;
 		}
-		if(Gdx.input.isKeyJustPressed(Keys.F5)) {
-			getApp().startTransition(
-					this,
-					getApp().getGameScreen(),
-					new FadeOutTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
-					new FadeInTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
-					new Action(){
-						@Override
-						public void action() {
-							System.out.println("test");
-						}
-					});
-		}
+//		if(Gdx.input.isKeyJustPressed(Keys.F5)) {
+//			getApp().startTransition(
+//					this,
+//					getApp().getGameScreen(),
+//					new FadeOutTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
+//					new FadeInTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
+//					new Action(){
+//						@Override
+//						public void action() {
+//							System.out.println("test");
+//						}
+//					});
+//		}
 
 		while (currentEvent == null || currentEvent.finished()) { // no active event
 			if (queue.peek() == null) { // no event queued up

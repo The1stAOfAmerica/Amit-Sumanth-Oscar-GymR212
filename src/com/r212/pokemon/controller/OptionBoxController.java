@@ -29,9 +29,9 @@ public class OptionBoxController extends InputAdapter {
 			return false;
 		}
 
-		if (keycode == Keys.UP) {
+		if (keycode == Keys.UP || keycode == Keys.W) {
 			return true;
-		} else if (keycode == Keys.DOWN) {
+		} else if (keycode == Keys.DOWN || keycode == Keys.S) {
 			return true;
 		} else if (keycode == Keys.ENTER) {
 			// activate
@@ -55,10 +55,10 @@ public class OptionBoxController extends InputAdapter {
 			return false;
 		}
 
-		if (keycode == Keys.UP) {
+		if (keycode == Keys.UP  || keycode == Keys.W) {
 			box.moveUp();
 			return true;
-		} else if (keycode == Keys.DOWN) {
+		} else if (keycode == Keys.DOWN  || keycode == Keys.S) {
 			box.moveDown();
 			return true;
 		} else if (keycode == Keys.ENTER) {		// activate

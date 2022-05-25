@@ -48,9 +48,9 @@ public class BattleScreenController extends InputAdapter {
 			return false;
 		}
 		if (this.state == STATE.USE_NEXT_POKEMON && optionBox.isVisible()) {
-			if (keycode == Keys.UP) {
+			if (keycode == Keys.UP || keycode == Keys.W) {
 				optionBox.moveUp();
-			} else if (keycode == Keys.DOWN) {
+			} else if (keycode == Keys.DOWN  || keycode == Keys.S) {
 				optionBox.moveDown();
 			} else if (keycode == Keys.ENTER) {
 				if (optionBox.getIndex() == 0) { // YES selected
@@ -92,16 +92,16 @@ public class BattleScreenController extends InputAdapter {
 					battle.progress(moveSelect.getSelection());
 					endTurn();
 				}
-			} else if (keycode == Keys.UP) {
+			} else if (keycode == Keys.UP  || keycode == Keys.W) {
 				moveSelect.moveUp();
 				return true;
-			} else if (keycode == Keys.DOWN) {
+			} else if (keycode == Keys.DOWN || keycode == Keys.S) {
 				moveSelect.moveDown();
 				return true;
-			} else if (keycode == Keys.LEFT) {
+			} else if (keycode == Keys.LEFT || keycode == Keys.A) {
 				moveSelect.moveLeft();
 				return true;
-			} else if (keycode == Keys.RIGHT) {
+			} else if (keycode == Keys.RIGHT || keycode == Keys.D) {
 				moveSelect.moveRight();
 				return true;
 			}

@@ -30,17 +30,17 @@ public class Pokemon {
 	
 	private Texture image;
 	
-	public Pokemon(String name, Texture image) {
+	public Pokemon(String name, Texture image, int level) {
 		this.name = name;
 		this.image = image;
-		this.level = 5;
+		this.level = level;
 		
 		/* init all stats to 1 */
 		stats = new HashMap<STAT, Integer>();
 		for (STAT stat : STAT.values()) {
 			stats.put(stat, 15);
 		}
-		stats.put(STAT.HITPOINTS, 10);
+		stats.put(STAT.HITPOINTS, 5+((this.level -1)*5));
 		currentHitpoints = stats.get(STAT.HITPOINTS);
 	}
 	
@@ -105,8 +105,8 @@ public class Pokemon {
 		return currentHitpoints == 0;
 	}
 	
-	public static Pokemon generatePokemon(String name, Texture sprite, MoveDatabase moveDatabase, int i) {
-		Pokemon generated = new Pokemon(name, sprite);
+	public static Pokemon generatePokemon(String name, Texture sprite, MoveDatabase moveDatabase, int level) {
+		Pokemon generated = new Pokemon(name, sprite,level);
 		generated.setMove(0, moveDatabase.getMove(0));
 		generated.setMove(1, moveDatabase.getMove(1));
 		generated.setMove(2, moveDatabase.getMove(2));

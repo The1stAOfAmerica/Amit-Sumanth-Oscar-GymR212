@@ -3,6 +3,7 @@ package com.r212.pokemon.screen;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Queue;
+import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -24,8 +25,12 @@ import com.r212.pokemon.controller.DialogueController;
 import com.r212.pokemon.controller.InteractionController;
 import com.r212.pokemon.controller.OptionBoxController;
 import com.r212.pokemon.dialogue.Dialogue;
+import com.r212.pokemon.dialogue.DialogueNode;
+import com.r212.pokemon.dialogue.LinearDialogueNode;
 import com.r212.pokemon.model.Camera;
 import com.r212.pokemon.model.DIRECTION;
+import com.r212.pokemon.model.actor.Actor;
+import com.r212.pokemon.model.actor.LimitedWalkingBehavior;
 import com.r212.pokemon.model.actor.PlayerActor;
 import com.r212.pokemon.model.world.World;
 import com.r212.pokemon.model.world.cutscene.CutsceneEvent;
@@ -40,6 +45,8 @@ import com.r212.pokemon.ui.OptionBox;
 import com.r212.pokemon.util.Action;
 import com.r212.pokemon.util.AnimationSet;
 
+import static com.r212.pokemon.screen.AngadBattleScreen.angad_defeated;
+
 /**
  * @author r212
  */
@@ -51,6 +58,9 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 	private InteractionController interactionController;
 	private OptionBoxController debugController;
 	private BattleScreen battleScreen;
+	private boolean angad_done = true;
+	private Actor Angad;
+	private Actor Brady;
 	
 	private HashMap<String, World> worlds = new HashMap<String, World>();
 	private World world;
@@ -107,7 +117,17 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 				new Animation(0.25f/2f, atlas.findRegions("brendan_run_south"), PlayMode.LOOP_PINGPONG), 
 				new Animation(0.25f/2f, atlas.findRegions("brendan_run_east"), PlayMode.LOOP_PINGPONG), 
 				new Animation(0.25f/2f, atlas.findRegions("brendan_run_west"), PlayMode.LOOP_PINGPONG));
-		
+		AnimationSet angadanimation = new AnimationSet(
+				new Animation(0.4f/2f, atlas.findRegions("brendan_walk_north"), PlayMode.LOOP_PINGPONG),
+				new Animation(0.4f/2f, atlas.findRegions("brendan_walk_south"), PlayMode.LOOP_PINGPONG),
+				new Animation(0.4f/2f, atlas.findRegions("brendan_walk_east"), PlayMode.LOOP_PINGPONG),
+				new Animation(0.4f/2f, atlas.findRegions("brendan_walk_west"), PlayMode.LOOP_PINGPONG),
+				atlas.findRegion("brendan_stand_north"),
+				atlas.findRegion("angad_stand_south"),
+				atlas.findRegion("brendan_stand_east"),
+				atlas.findRegion("brendan_stand_west")
+		);
+
 		Array<World> loadedWorlds = app.getAssetManager().getAll(World.class, new Array<World>());
 		for (World w : loadedWorlds) {
 			worlds.put(w.getName(), w);
@@ -117,14 +137,25 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 		camera = new Camera();
 		player = new PlayerActor(world, world.getSafeX(), world.getSafeY(), animations, this);
 		world.addActor(player);
-		
+		world.addActor(new Actor(world, 13, 7, angadanimation));
+
+		Angad = new Actor(world, 3, 3, angadanimation);
+		LimitedWalkingBehavior angadsbrain = new LimitedWalkingBehavior(Angad, 0, 0, 0, 0, 0.3f, 1f, new Random());
+		world.addActor(Angad, angadsbrain);
+
+		Dialogue greeting = new Dialogue();
+		DialogueNode firstNode = new LinearDialogueNode("You smelly person! You cannot beat me!", 0);
+		greeting.addNode(firstNode);
+		Angad.setDialogue(greeting);
+//		getApp().startTransition(this, new AngadBattleScreen(getApp()),new FadeOutTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()), new FadeInTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()), null);
+
 		initUI();
-		
+
 		multiplexer = new InputMultiplexer();
 		
 		playerController = new ActorMovementController(player);
 		dialogueController = new DialogueController(dialogueBox, optionsBox);
-		interactionController = new InteractionController(player, dialogueController);
+		interactionController = new InteractionController(player, dialogueController, getApp());
 		debugController = new OptionBoxController(debugBox);
 		debugController.addAction(new Action() {
 			@Override
@@ -160,32 +191,25 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 	
 	@Override
 	public void update(float delta) {
-		if(Gdx.input.isKeyJustPressed(Keys.F5)) {
-			getApp().startTransition(
-					this,
-					getApp().getBattleScreen(),
-					new FadeOutTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
-					new FadeInTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
-					new Action(){
-						@Override
-						public void action() {
-							System.out.println("test");
-						}
-					});
+		if((angad_done && angad_defeated) || Gdx.input.isKeyJustPressed(Keys.F5)){
+			System.out.println("STATUS UPDATE: Angad has been defeated");
+			angad_done = false;
+			Dialogue nomoreangad = new Dialogue();
+			nomoreangad.addNode(new LinearDialogueNode("Damn you got me!\nBut this was just a one time thing.\nIm tired now, we'll rematch later", 0));
+			Angad.setDialogue(nomoreangad);
 		}
-		if(Gdx.input.isKeyJustPressed(Keys.F6)) {
-			getApp().startTransition(
-					this,
-					getApp().getGameScreen(),
-					new FadeOutTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
-					new FadeInTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
-					new Action(){
-						@Override
-						public void action() {
-							System.out.println("test");
-						}
-					});
-		}
+//		if(Gdx.input.isKeyJustPressed(Keys.F5)) {
+//			getApp().startTransition(
+//					this,
+//					getApp().getBattleScreen(),
+//					new FadeOutTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
+//					new FadeInTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
+//					new Action(){
+//						@Override
+//						public void action() {
+//						}
+//					});
+//		}
 
 		while (currentEvent == null || currentEvent.isFinished()) { // no active event
 			if (eventQueue.peek() == null) { // no event queued up
