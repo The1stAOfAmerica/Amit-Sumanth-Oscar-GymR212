@@ -10,8 +10,9 @@ import com.r212.pokemon.dialogue.Dialogue;
 import com.r212.pokemon.dialogue.DialogueNode;
 import com.r212.pokemon.dialogue.DialogueTraverser;
 import com.r212.pokemon.dialogue.LinearDialogueNode;
-import com.r212.pokemon.screen.AbstractScreen;
+import com.r212.pokemon.model.actor.Actor;
 import com.r212.pokemon.screen.AngadBattleScreen;
+import com.r212.pokemon.screen.BradyBattleScreen;
 import com.r212.pokemon.screen.transition.FadeInTransition;
 import com.r212.pokemon.screen.transition.FadeOutTransition;
 import com.r212.pokemon.ui.DialogueBox;
@@ -19,6 +20,7 @@ import com.r212.pokemon.ui.OptionBox;
 import com.r212.pokemon.util.Action;
 
 import static com.r212.pokemon.screen.AngadBattleScreen.angad_defeated;
+import static com.r212.pokemon.screen.BradyBattleScreen.brady_defeated;
 
 
 /**
@@ -32,6 +34,8 @@ public class DialogueController extends InputAdapter {
 	private DialogueBox dialogueBox;
 	private OptionBox optionBox;
 	PokemonGame game;
+	private Actor targetActor;
+
 
 	public DialogueController(DialogueBox box, OptionBox optionBox) {
 		this.dialogueBox = box;
@@ -93,32 +97,23 @@ public class DialogueController extends InputAdapter {
 			}
 
 		}
-		if (!angad_defeated && dialogueBox.isFinished() && traverser != null && Gdx.input.isKeyJustPressed(Keys.ENTER)){
-			game.startTransition(
-					game.getGameScreen(),
-					new AngadBattleScreen(game),
-					new FadeOutTransition(0.5f, Color.BLACK, game.getTweenManager(), game.getAssetManager()),
-					new FadeInTransition(0.5f, Color.BLACK, game.getTweenManager(), game.getAssetManager()),
-					new Action(){
-						@Override
-						public void action() {
-							System.out.println("STATUS UPDATE: A fight with Angad has started");
-						}
-					});
-		}
+
+
 	}
 	
-	public void startDialogue(Dialogue dialogue, PokemonGame game) {
+	public void startDialogue(Dialogue dialogue, PokemonGame game, Actor targetActor, StorylineController storylineController) {
 		this.game = game;
+		this.targetActor = targetActor;
 		traverser = new DialogueTraverser(dialogue);
 		dialogueBox.setVisible(true);
+		storylineController.setDialogueBox(dialogueBox);
+		storylineController.setTargetActor(targetActor);
+		storylineController.setTraverser(traverser);
 		
 		DialogueNode nextNode = traverser.getNode();
 		if (nextNode instanceof LinearDialogueNode) {
-			LinearDialogueNode node = (LinearDialogueNode)nextNode;
-			dialogueBox.animateText(node.getText());
-
-
+				LinearDialogueNode node = (LinearDialogueNode) nextNode;
+				dialogueBox.animateText(node.getText());
 
 		}
 		if (nextNode instanceof ChoiceDialogueNode) {

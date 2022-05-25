@@ -46,7 +46,16 @@ public class Actor implements YSortable {
 	private AnimationSet animations;
 	
 	private Dialogue dialogue;
-	
+	private String name;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public Actor(World world, int x, int y, AnimationSet animations) {
 		this.observer = world;
 		this.world = world;
@@ -59,6 +68,7 @@ public class Actor implements YSortable {
 		this.nextMode = MOVEMENT_MODE.WALKING;
 		this.state = MOVEMENT_STATE.STILL;
 		this.facing = DIRECTION.SOUTH;
+		this.name = name;
 	}
 	
 	public enum MOVEMENT_STATE {

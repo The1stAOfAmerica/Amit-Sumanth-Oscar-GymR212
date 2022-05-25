@@ -17,7 +17,7 @@ public class DialogueBox extends Table {
 	private STATE state = STATE.IDLE;
 	
 	private Label textLabel;
-	
+
 	private enum STATE {
 		ANIMATING,
 		IDLE,
@@ -30,7 +30,8 @@ public class DialogueBox extends Table {
 		textLabel = new Label("\n", skin);
 		this.add(textLabel).expand().align(Align.left).pad(5f);
 	}
-	
+
+
 	public void animateText(String text) {
 		targetText = text;
 		animationTotalTime = text.length()*TIME_PER_CHARACTER;

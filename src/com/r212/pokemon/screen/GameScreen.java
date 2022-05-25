@@ -20,10 +20,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.r212.pokemon.PokemonGame;
-import com.r212.pokemon.controller.ActorMovementController;
-import com.r212.pokemon.controller.DialogueController;
-import com.r212.pokemon.controller.InteractionController;
-import com.r212.pokemon.controller.OptionBoxController;
+import com.r212.pokemon.controller.*;
 import com.r212.pokemon.dialogue.Dialogue;
 import com.r212.pokemon.dialogue.DialogueNode;
 import com.r212.pokemon.dialogue.LinearDialogueNode;
@@ -46,19 +43,22 @@ import com.r212.pokemon.util.Action;
 import com.r212.pokemon.util.AnimationSet;
 
 import static com.r212.pokemon.screen.AngadBattleScreen.angad_defeated;
+import static com.r212.pokemon.screen.BradyBattleScreen.brady_defeated;
 
 /**
  * @author r212
  */
 public class GameScreen extends AbstractScreen implements CutscenePlayer {
-	
+
 	private InputMultiplexer multiplexer;
 	private DialogueController dialogueController;
 	private ActorMovementController playerController;
+	private StorylineController storylineController;
 	private InteractionController interactionController;
 	private OptionBoxController debugController;
 	private BattleScreen battleScreen;
 	private boolean angad_done = true;
+	private boolean brady_done = true;
 	private Actor Angad;
 	private Actor Brady;
 	
@@ -137,17 +137,25 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 		camera = new Camera();
 		player = new PlayerActor(world, world.getSafeX(), world.getSafeY(), animations, this);
 		world.addActor(player);
-		world.addActor(new Actor(world, 13, 7, angadanimation));
 
 		Angad = new Actor(world, 3, 3, angadanimation);
+		Angad.setName("Angad");
 		LimitedWalkingBehavior angadsbrain = new LimitedWalkingBehavior(Angad, 0, 0, 0, 0, 0.3f, 1f, new Random());
 		world.addActor(Angad, angadsbrain);
+		Dialogue agreeting = new Dialogue();
+		DialogueNode speak = new LinearDialogueNode("You smelly person! You cannot beat me!", 0);
+		agreeting.addNode(speak);
+		Angad.setDialogue(agreeting);
 
-		Dialogue greeting = new Dialogue();
-		DialogueNode firstNode = new LinearDialogueNode("You smelly person! You cannot beat me!", 0);
-		greeting.addNode(firstNode);
-		Angad.setDialogue(greeting);
-//		getApp().startTransition(this, new AngadBattleScreen(getApp()),new FadeOutTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()), new FadeInTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()), null);
+		Brady = new Actor(world, 14, 11, angadanimation);
+
+		Brady.setName("Brady");
+		LimitedWalkingBehavior bradysbrain = new LimitedWalkingBehavior(Angad, 0, 0, 0, 0, 0.3f, 1f, new Random());
+		world.addActor(Brady, bradysbrain);
+		Dialogue bgreeting = new Dialogue();
+		DialogueNode bspeak = new LinearDialogueNode("I am brady", 0);
+		bgreeting.addNode(bspeak);
+		Brady.setDialogue(bgreeting);
 
 		initUI();
 
@@ -155,7 +163,8 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 		
 		playerController = new ActorMovementController(player);
 		dialogueController = new DialogueController(dialogueBox, optionsBox);
-		interactionController = new InteractionController(player, dialogueController, getApp());
+		storylineController = new StorylineController(getApp());
+		interactionController = new InteractionController(player, dialogueController, getApp(), storylineController);
 		debugController = new OptionBoxController(debugBox);
 		debugController.addAction(new Action() {
 			@Override
@@ -167,7 +176,9 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 		multiplexer.addProcessor(0, debugController);
 		multiplexer.addProcessor(1, dialogueController);
 		multiplexer.addProcessor(2, playerController);
-		multiplexer.addProcessor(3, interactionController);
+		multiplexer.addProcessor(3, storylineController);
+		multiplexer.addProcessor(4, interactionController);
+
 		
 		worldRenderer = new WorldRenderer(getApp().getAssetManager(), world);
 		queueRenderer = new EventQueueRenderer(app.getSkin(), eventQueue);
@@ -198,6 +209,13 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 			nomoreangad.addNode(new LinearDialogueNode("Damn you got me!\nBut this was just a one time thing.\nIm tired now, we'll rematch later", 0));
 			Angad.setDialogue(nomoreangad);
 		}
+		if((brady_done && brady_defeated) || Gdx.input.isKeyJustPressed(Keys.F5)){
+			System.out.println("STATUS UPDATE: Brady has been defeated");
+			brady_done = false;
+			Dialogue nomorebrady = new Dialogue();
+			nomorebrady.addNode(new LinearDialogueNode("I must've been exhausted!", 0));
+			Brady.setDialogue(nomorebrady);
+		}
 //		if(Gdx.input.isKeyJustPressed(Keys.F5)) {
 //			getApp().startTransition(
 //					this,
@@ -224,11 +242,13 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 		if (currentEvent != null) {
 			currentEvent.update(delta);
 		}
-			
+
 		if (currentEvent == null) {
 			playerController.update(delta);
 		}
-		
+
+
+		storylineController.update(delta);
 		dialogueController.update(delta);
 		
 		if (!dialogueBox.isVisible()) {

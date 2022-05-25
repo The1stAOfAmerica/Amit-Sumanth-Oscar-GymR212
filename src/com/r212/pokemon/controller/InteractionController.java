@@ -7,8 +7,6 @@ import com.r212.pokemon.dialogue.Dialogue;
 import com.r212.pokemon.model.DIRECTION;
 import com.r212.pokemon.model.Tile;
 import com.r212.pokemon.model.actor.Actor;
-import com.r212.pokemon.screen.AbstractScreen;
-import com.r212.pokemon.screen.AngadBattleScreen;
 
 /**
  * Controller that interacts with what is in front of the player Actor.
@@ -20,13 +18,16 @@ public class InteractionController extends InputAdapter {
 	private Actor a;
 	private DialogueController dialogueController;
 	private PokemonGame game;
+	private StorylineController storylineController;
 
-	public InteractionController(Actor a, DialogueController dialogueController, PokemonGame game) {
+
+	public InteractionController(Actor a, DialogueController dialogueController, PokemonGame game, StorylineController storylineController) {
 		this.a = a;
 		this.dialogueController = dialogueController;
 		this.game = game;
+		this.storylineController = storylineController;
 	}
-	
+
 	@Override
 	public boolean keyUp(int keycode) {
 		if (keycode == Keys.ENTER) {
@@ -36,7 +37,7 @@ public class InteractionController extends InputAdapter {
 				if (targetActor.getDialogue() != null) {
 					if (targetActor.refaceWithoutAnimation(DIRECTION.getOpposite(a.getFacing()))){
 						Dialogue dialogue = targetActor.getDialogue();
-						dialogueController.startDialogue(dialogue, game);
+						dialogueController.startDialogue(dialogue, game, targetActor, storylineController);
 					}
 				}
 			}

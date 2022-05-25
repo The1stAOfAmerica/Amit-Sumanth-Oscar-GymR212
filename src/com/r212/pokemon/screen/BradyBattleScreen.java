@@ -3,7 +3,6 @@ package com.r212.pokemon.screen;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -26,10 +25,7 @@ import com.r212.pokemon.model.Pokemon;
 import com.r212.pokemon.screen.renderer.BattleDebugRenderer;
 import com.r212.pokemon.screen.renderer.BattleRenderer;
 import com.r212.pokemon.screen.renderer.EventQueueRenderer;
-import com.r212.pokemon.screen.transition.FadeInTransition;
-import com.r212.pokemon.screen.transition.FadeOutTransition;
 import com.r212.pokemon.ui.*;
-import com.r212.pokemon.util.Action;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -39,14 +35,13 @@ import static com.r212.pokemon.battle.Battle.STATE.WIN;
 /**
  * @author r212
  */
-public class AngadBattleScreen extends AbstractScreen implements BattleEventPlayer {
+public class BradyBattleScreen extends AbstractScreen implements BattleEventPlayer {
 
 	/* Controller */
 	private BattleScreenController controller;
 
 
-
-	public static boolean angad_defeated;
+	public static boolean brady_defeated;
 
 	/* Event system */
 	private BattleEvent currentEvent;
@@ -86,7 +81,7 @@ public class AngadBattleScreen extends AbstractScreen implements BattleEventPlay
 	private boolean uiDebug = false;
 	private boolean battleDebug = true;
 
-	public AngadBattleScreen(PokemonGame app) {
+	public BradyBattleScreen(PokemonGame app) {
 		super(app);
 		gameViewport = new ScreenViewport();
 		batch = new SpriteBatch();
@@ -97,7 +92,7 @@ public class AngadBattleScreen extends AbstractScreen implements BattleEventPlay
 		Trainer playerTrainer = new Trainer(Pokemon.generatePokemon("Boba", bulbasaur, app.getMoveDatabase(), 5));
 		playerTrainer.addPokemon(Pokemon.generatePokemon("Golem", slowpoke, app.getMoveDatabase(), 20));
 
-		Trainer opponentTrainer = new Trainer(Pokemon.generatePokemon("Angad - Grimer", slowpoke, app.getMoveDatabase(), 5));
+		Trainer opponentTrainer = new Trainer(Pokemon.generatePokemon("brady - Grimer", slowpoke, app.getMoveDatabase(), 5));
 		opponentTrainer.addPokemon(Pokemon.generatePokemon("Lola", bulbasaur, app.getMoveDatabase(), 10));
 
 		battle = new Battle(
@@ -135,7 +130,7 @@ public class AngadBattleScreen extends AbstractScreen implements BattleEventPlay
 	@Override
 	public void update(float delta) {
 		/* DEBUG */
-		if (battle.getState() == WIN) angad_defeated = true;
+		if (battle.getState() == WIN) brady_defeated = true;
 		if (Gdx.input.isKeyJustPressed(Keys.F9)) {
 			uiDebug = !uiDebug;
 			uiStage.setDebugAll(uiDebug);
