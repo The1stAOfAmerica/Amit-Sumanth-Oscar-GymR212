@@ -120,7 +120,11 @@ public class PokemonGame extends Game {
 		assetManager.load("res/graphics_packed/battle/battlepack.atlas", TextureAtlas.class);
 		assetManager.load("res/graphics/pokemon/bulbasaur.png", Texture.class);
 		assetManager.load("res/graphics/pokemon/slowpoke.png", Texture.class);
-		
+		assetManager.load("res/graphics/pokemon/absol.png", Texture.class);
+		assetManager.load("res/graphics/pokemon/machamp.png", Texture.class);
+		assetManager.load("res/graphics/pokemon/braviary.png", Texture.class);
+
+
 		for (int i = 0; i < 32; i++) {
 			assetManager.load("res/graphics/statuseffect/attack_"+i+".png", Texture.class);
 		}

@@ -182,10 +182,157 @@ brendan_stand_east
 angad_stand_south
     rotate: false
     xy: 187, 53
-    size: 14, 22
-    orig:14, 22
+    size: 16, 23
+    orig:16, 23
     offset: 0,0
     index: -1
+angad_stand_north
+    rotate: false
+    xy: 179, 78
+    size: 16, 23
+    orig:16, 23
+    offset: 0,0
+    index: -1
+brady_stand_south
+    rotate: false
+    xy: 161, 77
+    size: 14, 19
+    orig: 14, 19
+    offset: 0,0
+    index: -1
+brady_stand_west
+    rotate: false
+    xy: 126, 77
+    size: 14, 19
+    orig: 14, 19
+    offset: 0,0
+    index: -1
+brady_stand_east
+    rotate: false
+    xy: 109, 77
+    size: 14, 19
+    orig: 14, 19
+    offset: 0,0
+    index: -1
+brady_stand_north
+    rotate: false
+    xy: 142, 77
+    size: 14, 19
+    orig: 14, 19
+    offset: 0,0
+    index: -1
+celine_stand_south
+    rotate: false
+    xy: 168, 53
+    size: 16, 20
+    orig: 16, 20
+    offset: 0,0
+    index: -1
+celine_stand_west
+    rotate: false
+    xy: 135, 53
+    size: 14, 20
+    orig: 14, 20
+    offset: 0,0
+    index: -1
+celine_stand_east
+    rotate: false
+    xy: 112, 53
+    size: 14, 20
+    orig: 14, 20
+    offset: 0,0
+    index: -1
+celine_stand_north
+    rotate: false
+    xy: 152, 53
+    size: 14, 20
+    orig: 14, 20
+    offset: 0,0
+    index: -1
+celine_walk_south
+    rotate: false
+    xy: 164, 101
+    size: 14, 20
+    orig: 14, 20
+    offset: 0,0
+    index: 0
+celine_walk_south
+    rotate: false
+    xy: 168, 53
+    size: 16, 20
+    orig: 16, 20
+    offset: 0,0
+    index: 1
+celine_walk_south
+    rotate: false
+    xy: 180, 101
+    size: 14, 20
+    orig: 14, 20
+    offset: 0,0
+    index: 2
+celine_walk_west
+    rotate: false
+    xy: 107, 101
+    size: 15, 20
+    orig: 15, 20
+    offset: 0,0
+    index: 0
+celine_walk_west
+    rotate: false
+    xy: 135, 53
+    size: 14, 20
+    orig: 14, 20
+    offset: 0,0
+    index: 1
+celine_walk_west
+    rotate: false
+    xy: 90, 101
+    size: 15, 20
+    orig: 15, 20
+    offset: 0,0
+    index: 2
+celine_walk_east
+    rotate: false
+    xy: 88, 77
+    size: 15, 20
+    orig: 15, 20
+    offset: 0,0
+    index: 0
+celine_walk_east
+    rotate: false
+    xy: 112, 53
+    size: 14, 20
+    orig: 14, 20
+    offset: 0,0
+    index: 1
+celine_walk_east
+    rotate: false
+    xy: 88, 54
+    size: 15, 20
+    orig: 15, 20
+    offset: 0,0
+    index: 2
+celine_walk_north
+    rotate: false
+    xy: 127, 101
+    size: 14, 20
+    orig: 14, 20
+    offset: 0,0
+    index: 0
+celine_walk_north
+    rotate: false
+    xy: 152, 53
+    size: 14, 20
+    orig: 14, 20
+    offset: 0,0
+    index: 1
+celine_walk_north
+    rotate: false
+    xy: 146, 101
+    size: 14, 20
+    orig: 14, 20
+    offset: 0,0
+    index: 2
 brendan_walk_east
   rotate: false
   xy: 454, 76
@@ -201,7 +348,7 @@ brendan_stand_north
   offset: 0, 0
   index: -1
 brendan_walk_north
-  rotate: false
+  rotate: falsea
   xy: 472, 76
   size: 16, 24
   orig: 16, 24

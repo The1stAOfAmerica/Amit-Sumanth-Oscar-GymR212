@@ -114,4 +114,8 @@ public class Pokemon {
 
 		return generated;
 	}
+
+	public void addLevel() {
+		level += 5;
+	}
 }

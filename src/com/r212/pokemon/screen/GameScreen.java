@@ -1,5 +1,6 @@
 package com.r212.pokemon.screen;
 
+import java.security.Key;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Queue;
@@ -41,6 +42,7 @@ import com.r212.pokemon.ui.DialogueBox;
 import com.r212.pokemon.ui.OptionBox;
 import com.r212.pokemon.util.Action;
 import com.r212.pokemon.util.AnimationSet;
+import org.lwjgl.Sys;
 
 import static com.r212.pokemon.screen.AngadBattleScreen.angad_defeated;
 import static com.r212.pokemon.screen.BradyBattleScreen.brady_defeated;
@@ -89,6 +91,7 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 	private DialogueBox dialogueBox;
 	private OptionBox optionsBox;
 	private OptionBox debugBox;
+	private boolean temp = true;
 
 	public GameScreen(PokemonGame app) {
 		super(app);
@@ -122,10 +125,30 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 				new Animation(0.4f/2f, atlas.findRegions("brendan_walk_south"), PlayMode.LOOP_PINGPONG),
 				new Animation(0.4f/2f, atlas.findRegions("brendan_walk_east"), PlayMode.LOOP_PINGPONG),
 				new Animation(0.4f/2f, atlas.findRegions("brendan_walk_west"), PlayMode.LOOP_PINGPONG),
-				atlas.findRegion("brendan_stand_north"),
+				atlas.findRegion("angad_stand_north"),
 				atlas.findRegion("angad_stand_south"),
 				atlas.findRegion("brendan_stand_east"),
 				atlas.findRegion("brendan_stand_west")
+		);
+		AnimationSet bradyanimation = new AnimationSet(
+				new Animation(0.4f/2f, atlas.findRegions("brendan_walk_north"), PlayMode.LOOP_PINGPONG),
+				new Animation(0.4f/2f, atlas.findRegions("brendan_walk_south"), PlayMode.LOOP_PINGPONG),
+				new Animation(0.4f/2f, atlas.findRegions("brendan_walk_east"), PlayMode.LOOP_PINGPONG),
+				new Animation(0.4f/2f, atlas.findRegions("brendan_walk_west"), PlayMode.LOOP_PINGPONG),
+				atlas.findRegion("brady_stand_north"),
+				atlas.findRegion("brady_stand_south"),
+				atlas.findRegion("brady_stand_east"),
+				atlas.findRegion("brady_stand_west")
+		);
+		AnimationSet celineanimation = new AnimationSet(
+				new Animation(0.4f/2f, atlas.findRegions("celine_walk_north"), PlayMode.LOOP_PINGPONG),
+				new Animation(0.4f/2f, atlas.findRegions("celine_walk_south"), PlayMode.LOOP_PINGPONG),
+				new Animation(0.4f/2f, atlas.findRegions("celine_walk_east"), PlayMode.LOOP_PINGPONG),
+				new Animation(0.4f/2f, atlas.findRegions("celine_walk_west"), PlayMode.LOOP_PINGPONG),
+				atlas.findRegion("celine_stand_north"),
+				atlas.findRegion("celine_stand_south"),
+				atlas.findRegion("celine_stand_east"),
+				atlas.findRegion("celine_stand_west")
 		);
 
 		Array<World> loadedWorlds = app.getAssetManager().getAll(World.class, new Array<World>());
@@ -138,22 +161,31 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 		player = new PlayerActor(world, world.getSafeX(), world.getSafeY(), animations, this);
 		world.addActor(player);
 
+		Actor Celine = new Actor(world, 9, 6, celineanimation);
+		LimitedWalkingBehavior celinemove = new LimitedWalkingBehavior(Celine, 10, 10, 10, 10, 0.3f, 1f, new Random());
+		Dialogue ctalk = new Dialogue();
+		ctalk.addNode(new LinearDialogueNode("Hi! Im Celine", 0, 1));
+		ctalk.addNode(new LinearDialogueNode("Check out my Roblox Hotdog Game!", 1));
+		Celine.setDialogue(ctalk);
+		Celine.setName("Celine");
+		world.addActor(Celine, celinemove);
+
 		Angad = new Actor(world, 3, 3, angadanimation);
 		Angad.setName("Angad");
 		LimitedWalkingBehavior angadsbrain = new LimitedWalkingBehavior(Angad, 0, 0, 0, 0, 0.3f, 1f, new Random());
 		world.addActor(Angad, angadsbrain);
 		Dialogue agreeting = new Dialogue();
-		DialogueNode speak = new LinearDialogueNode("You smelly person! You cannot beat me!", 0);
+		DialogueNode speak = new LinearDialogueNode("<Angad Dialogue>", 0);
 		agreeting.addNode(speak);
 		Angad.setDialogue(agreeting);
 
-		Brady = new Actor(world, 14, 11, angadanimation);
+		Brady = new Actor(world, 14, 11, bradyanimation);
 
 		Brady.setName("Brady");
 		LimitedWalkingBehavior bradysbrain = new LimitedWalkingBehavior(Angad, 0, 0, 0, 0, 0.3f, 1f, new Random());
 		world.addActor(Brady, bradysbrain);
 		Dialogue bgreeting = new Dialogue();
-		DialogueNode bspeak = new LinearDialogueNode("I am brady", 0);
+		DialogueNode bspeak = new LinearDialogueNode("<Brady Dialogue>", 0);
 		bgreeting.addNode(bspeak);
 		Brady.setDialogue(bgreeting);
 
@@ -202,19 +234,30 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 	
 	@Override
 	public void update(float delta) {
+		if (!dialogueBox.isVisible() && temp && (angad_defeated && !angad_done) && (brady_defeated && !brady_done)){
+
+			Dialogue kiyoi = new Dialogue();
+			kiyoi.addNode(new LinearDialogueNode("...", 0, 1));
+			kiyoi.addNode(new LinearDialogueNode("What is that?", 1, 2));
+			kiyoi.addNode(new LinearDialogueNode("Is that Mr. Kiyoi???", 2));
+			dialogueController.kiyoiDialogueStart(kiyoi);
+			temp = false;
+		}
 		if((angad_done && angad_defeated) || Gdx.input.isKeyJustPressed(Keys.F5)){
 			System.out.println("STATUS UPDATE: Angad has been defeated");
-			angad_done = false;
 			Dialogue nomoreangad = new Dialogue();
-			nomoreangad.addNode(new LinearDialogueNode("Damn you got me!\nBut this was just a one time thing.\nIm tired now, we'll rematch later", 0));
+			nomoreangad.addNode(new LinearDialogueNode("<Angad End Dialogue>", 0));
 			Angad.setDialogue(nomoreangad);
+			angad_done = false;
+			angad_defeated = true;
 		}
 		if((brady_done && brady_defeated) || Gdx.input.isKeyJustPressed(Keys.F5)){
 			System.out.println("STATUS UPDATE: Brady has been defeated");
-			brady_done = false;
 			Dialogue nomorebrady = new Dialogue();
-			nomorebrady.addNode(new LinearDialogueNode("I must've been exhausted!", 0));
+			nomorebrady.addNode(new LinearDialogueNode("<Brady End Dialogue>", 0));
 			Brady.setDialogue(nomorebrady);
+			brady_done = false;
+			brady_defeated = true;
 		}
 //		if(Gdx.input.isKeyJustPressed(Keys.F5)) {
 //			getApp().startTransition(

@@ -21,8 +21,7 @@ addObj      19  2   RUG
 addObj      0   11  KIYOI_DESK
 addActor    3   3
 
-//setTerrain      3   3   NONE //angad
-setTerrain      14  11  NONE //brady
+
 
 setTerrain		0	14	WALL_TOP
 setTerrain		1	14	WALL_TOP

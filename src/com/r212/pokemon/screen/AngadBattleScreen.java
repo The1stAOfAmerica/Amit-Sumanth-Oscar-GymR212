@@ -85,6 +85,8 @@ public class AngadBattleScreen extends AbstractScreen implements BattleEventPlay
 	/* DEBUG */
 	private boolean uiDebug = false;
 	private boolean battleDebug = true;
+	private boolean temp;
+	private Trainer opponentTrainer;
 
 	public AngadBattleScreen(PokemonGame app) {
 		super(app);
@@ -93,12 +95,14 @@ public class AngadBattleScreen extends AbstractScreen implements BattleEventPlay
 
 		Texture bulbasaur = app.getAssetManager().get("res/graphics/pokemon/bulbasaur.png", Texture.class);
 		Texture slowpoke = app.getAssetManager().get("res/graphics/pokemon/slowpoke.png", Texture.class);
+		Texture absol = app.getAssetManager().get("res/graphics/pokemon/absol.png", Texture.class);
+		Texture braviary = app.getAssetManager().get("res/graphics/pokemon/braviary.png", Texture.class);
 
-		Trainer playerTrainer = new Trainer(Pokemon.generatePokemon("Boba", bulbasaur, app.getMoveDatabase(), 5));
-		playerTrainer.addPokemon(Pokemon.generatePokemon("Golem", slowpoke, app.getMoveDatabase(), 20));
 
-		Trainer opponentTrainer = new Trainer(Pokemon.generatePokemon("Angad - Grimer", slowpoke, app.getMoveDatabase(), 5));
-		opponentTrainer.addPokemon(Pokemon.generatePokemon("Lola", bulbasaur, app.getMoveDatabase(), 10));
+		Trainer playerTrainer = BattleScreen.playerTrainer;
+
+		opponentTrainer = new Trainer(Pokemon.generatePokemon("Angad's Absol", absol, app.getMoveDatabase(), 10));
+		opponentTrainer.addPokemon(Pokemon.generatePokemon("Angad's Braviary ", braviary, app.getMoveDatabase(), 10));
 
 		battle = new Battle(
 				playerTrainer,
@@ -135,7 +139,12 @@ public class AngadBattleScreen extends AbstractScreen implements BattleEventPlay
 	@Override
 	public void update(float delta) {
 		/* DEBUG */
-		if (battle.getState() == WIN) angad_defeated = true;
+		if (temp && battle.getState() == WIN){
+			angad_defeated = true;
+			BattleScreen.playerTrainer.addPokemon(opponentTrainer.getPokemon(0));
+			BattleScreen.addLevelPoke();
+			temp = false;
+		}
 		if (Gdx.input.isKeyJustPressed(Keys.F9)) {
 			uiDebug = !uiDebug;
 			uiStage.setDebugAll(uiDebug);

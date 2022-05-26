@@ -20,19 +20,19 @@ public class BattleDebugRenderer {
 	}
 	
 	public void render() {
-		shapeRenderer.begin(ShapeType.Line);
-		shapeRenderer.setColor(Color.RED);
-		shapeRenderer.rect(
-				battleRenderer.playerSquareMiddleX()-battleRenderer.squareSize(), 
-				battleRenderer.playerSquareMiddleY()-battleRenderer.squareSize(), 
-				battleRenderer.squareSize()*2, 
-				battleRenderer.squareSize()*2);
-		shapeRenderer.rect(
-				battleRenderer.opponentSquareMiddleX()-battleRenderer.squareSize(), 
-				battleRenderer.opponentSquareMiddleY()-battleRenderer.squareSize(), 
-				battleRenderer.squareSize()*2, 
-				battleRenderer.squareSize()*2);
-		shapeRenderer.end();
+//		shapeRenderer.begin(ShapeType.Line);
+//		shapeRenderer.setColor(Color.BLUE);
+//		shapeRenderer.rect(
+//				battleRenderer.playerSquareMiddleX()-battleRenderer.squareSize(),
+//				battleRenderer.playerSquareMiddleY()-battleRenderer.squareSize(),
+//				battleRenderer.squareSize()*2,
+//				battleRenderer.squareSize()*2);
+//		shapeRenderer.rect(
+//				battleRenderer.opponentSquareMiddleX()-battleRenderer.squareSize(),
+//				battleRenderer.opponentSquareMiddleY()-battleRenderer.squareSize(),
+//				battleRenderer.squareSize()*2,
+//				battleRenderer.squareSize()*2);
+//		shapeRenderer.end();
 	}
 
 }

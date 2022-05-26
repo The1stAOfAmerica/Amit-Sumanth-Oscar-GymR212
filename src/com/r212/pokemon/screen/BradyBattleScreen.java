@@ -80,6 +80,8 @@ public class BradyBattleScreen extends AbstractScreen implements BattleEventPlay
 	/* DEBUG */
 	private boolean uiDebug = false;
 	private boolean battleDebug = true;
+	private boolean temp = true;
+	private Trainer opponentTrainer;
 
 	public BradyBattleScreen(PokemonGame app) {
 		super(app);
@@ -88,12 +90,11 @@ public class BradyBattleScreen extends AbstractScreen implements BattleEventPlay
 
 		Texture bulbasaur = app.getAssetManager().get("res/graphics/pokemon/bulbasaur.png", Texture.class);
 		Texture slowpoke = app.getAssetManager().get("res/graphics/pokemon/slowpoke.png", Texture.class);
+		Texture machamp = app.getAssetManager().get("res/graphics/pokemon/machamp.png", Texture.class);
 
-		Trainer playerTrainer = new Trainer(Pokemon.generatePokemon("Boba", bulbasaur, app.getMoveDatabase(), 5));
-		playerTrainer.addPokemon(Pokemon.generatePokemon("Golem", slowpoke, app.getMoveDatabase(), 20));
+		Trainer playerTrainer = BattleScreen.playerTrainer;
 
-		Trainer opponentTrainer = new Trainer(Pokemon.generatePokemon("brady - Grimer", slowpoke, app.getMoveDatabase(), 5));
-		opponentTrainer.addPokemon(Pokemon.generatePokemon("Lola", bulbasaur, app.getMoveDatabase(), 10));
+		opponentTrainer = new Trainer(Pokemon.generatePokemon("Brady's Machamp", machamp, app.getMoveDatabase(), 5));
 
 		battle = new Battle(
 				playerTrainer,
@@ -130,7 +131,12 @@ public class BradyBattleScreen extends AbstractScreen implements BattleEventPlay
 	@Override
 	public void update(float delta) {
 		/* DEBUG */
-		if (battle.getState() == WIN) brady_defeated = true;
+		if (temp && battle.getState() == WIN){
+			brady_defeated = true;
+			BattleScreen.playerTrainer.addPokemon(opponentTrainer.getPokemon(0));
+			BattleScreen.addLevelPoke();
+			temp = false;
+		}
 		if (Gdx.input.isKeyJustPressed(Keys.F9)) {
 			uiDebug = !uiDebug;
 			uiStage.setDebugAll(uiDebug);

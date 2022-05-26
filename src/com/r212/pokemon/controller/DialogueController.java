@@ -100,7 +100,7 @@ public class DialogueController extends InputAdapter {
 
 
 	}
-	
+
 	public void startDialogue(Dialogue dialogue, PokemonGame game, Actor targetActor, StorylineController storylineController) {
 		this.game = game;
 		this.targetActor = targetActor;
@@ -130,6 +130,7 @@ public class DialogueController extends InputAdapter {
 	private void progress(int index) {
 		optionBox.setVisible(false);
 		DialogueNode nextNode = traverser.getNextNode(index);
+
 		if (nextNode instanceof LinearDialogueNode) {
 			LinearDialogueNode node = (LinearDialogueNode)nextNode;
 			dialogueBox.animateText(node.getText());
@@ -138,6 +139,25 @@ public class DialogueController extends InputAdapter {
 			ChoiceDialogueNode node = (ChoiceDialogueNode)nextNode;
 			dialogueBox.animateText(node.getText());
 			optionBox.clearChoices();
+			for (String s : node.getLabels()) {
+				optionBox.addOption(s);
+			}
+		}
+	}
+	public void kiyoiDialogueStart(Dialogue dialogue) {
+		traverser = new DialogueTraverser(dialogue);
+		dialogueBox.setVisible(true);
+		DialogueNode nextNode = traverser.getNode();
+
+		if (nextNode instanceof LinearDialogueNode) {
+			LinearDialogueNode node = (LinearDialogueNode) nextNode;
+			dialogueBox.animateText(node.getText());
+
+		}
+		if (nextNode instanceof ChoiceDialogueNode) {
+			ChoiceDialogueNode node = (ChoiceDialogueNode)nextNode;
+			dialogueBox.animateText(node.getText());
+			optionBox.clear();
 			for (String s : node.getLabels()) {
 				optionBox.addOption(s);
 			}

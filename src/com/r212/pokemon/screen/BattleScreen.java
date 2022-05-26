@@ -80,21 +80,23 @@ public class BattleScreen extends AbstractScreen implements BattleEventPlayer {
 	private DetailedStatusBox playerStatus;
 	private StatusBox opponentStatus;
 
+	public static Trainer playerTrainer;
 
 	/* DEBUG */
 	private boolean uiDebug = false;
 	private boolean battleDebug = true;
+	private static PokemonGame app;
 
 	public BattleScreen(PokemonGame app) {
 		super(app);
+		this.app = app;
 		gameViewport = new ScreenViewport();
 		batch = new SpriteBatch();
 
 		Texture bulbasaur = app.getAssetManager().get("res/graphics/pokemon/bulbasaur.png", Texture.class);
 		Texture slowpoke = app.getAssetManager().get("res/graphics/pokemon/slowpoke.png", Texture.class);
 
-		Trainer playerTrainer = new Trainer(Pokemon.generatePokemon("Boba", bulbasaur, app.getMoveDatabase(), 5));
-		playerTrainer.addPokemon(Pokemon.generatePokemon("Golem", slowpoke, app.getMoveDatabase(), 20));
+		playerTrainer = new Trainer(Pokemon.generatePokemon("Bulbasaur", bulbasaur, app.getMoveDatabase(), 5));
 
 		Trainer opponentTrainer = new Trainer(Pokemon.generatePokemon("Grimer", slowpoke, app.getMoveDatabase(), 5));
 		opponentTrainer.addPokemon(Pokemon.generatePokemon("Lola", bulbasaur, app.getMoveDatabase(), 10));
@@ -114,6 +116,16 @@ public class BattleScreen extends AbstractScreen implements BattleEventPlayer {
 		controller = new BattleScreenController(battle, queue, dialogueBox, moveSelectBox, optionBox);
 		battle.beginBattle();
 
+	}
+
+	public static void addLevelPoke() {
+		Pokemon tempPoke = playerTrainer.getPokemon(0);
+		Trainer temp = new Trainer(Pokemon.generatePokemon(tempPoke.getName(), tempPoke.getSprite(), app.getMoveDatabase(), tempPoke.getLevel() + 5));
+		for(int i = 1; i < playerTrainer.getTeamSize(); i++) {
+			tempPoke = playerTrainer.getPokemon(i);
+			temp.addPokemon(Pokemon.generatePokemon(tempPoke.getName(), tempPoke.getSprite(), app.getMoveDatabase(), tempPoke.getLevel() + 5));
+		}
+		playerTrainer = temp;
 	}
 
 	@Override

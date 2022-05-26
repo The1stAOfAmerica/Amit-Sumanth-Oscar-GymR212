@@ -13,6 +13,11 @@ public class LinearDialogueNode implements DialogueNode {
 		this.text = text;
 		this.id = id;
 	}
+	public LinearDialogueNode(String text, int id, int add) {
+		this.text = text;
+		this.id = id;
+		setPointer(add);
+	}
 	
 	public void setPointer(int id) {
 		pointers.add(id);

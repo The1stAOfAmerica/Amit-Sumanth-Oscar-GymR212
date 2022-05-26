@@ -25,6 +25,12 @@ public class Trainer {
 			return true;
 		}
 	}
+
+	public void addLevel() {
+		for(int i = 0; i < team.size(); i++) {
+			team.get(i).addLevel();
+		}
+	}
 	
 	public Pokemon getPokemon(int index) {
 		return team.get(index);
