@@ -3,7 +3,6 @@ package com.r212.pokemon.screen;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -26,10 +25,7 @@ import com.r212.pokemon.model.Pokemon;
 import com.r212.pokemon.screen.renderer.BattleDebugRenderer;
 import com.r212.pokemon.screen.renderer.BattleRenderer;
 import com.r212.pokemon.screen.renderer.EventQueueRenderer;
-import com.r212.pokemon.screen.transition.FadeInTransition;
-import com.r212.pokemon.screen.transition.FadeOutTransition;
 import com.r212.pokemon.ui.*;
-import com.r212.pokemon.util.Action;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -39,14 +35,14 @@ import static com.r212.pokemon.battle.Battle.STATE.WIN;
 /**
  * @author r212
  */
-public class AngadBattleScreen extends AbstractScreen implements BattleEventPlayer {
+public class KiyoiBattleScreen extends AbstractScreen implements BattleEventPlayer {
 
 	/* Controller */
 	private BattleScreenController controller;
 
 
 
-	public static boolean angad_defeated;
+	public static boolean kiyoi_defeated;
 
 	/* Event system */
 	private BattleEvent currentEvent;
@@ -88,21 +84,22 @@ public class AngadBattleScreen extends AbstractScreen implements BattleEventPlay
 	private boolean temp = true;
 	private Trainer opponentTrainer;
 
-	public AngadBattleScreen(PokemonGame app) {
+	public KiyoiBattleScreen(PokemonGame app) {
 		super(app);
 		gameViewport = new ScreenViewport();
 		batch = new SpriteBatch();
 
-		Texture bulbasaur = app.getAssetManager().get("res/graphics/pokemon/bulbasaur.png", Texture.class);
-		Texture slowpoke = app.getAssetManager().get("res/graphics/pokemon/slowpoke.png", Texture.class);
-		Texture absol = app.getAssetManager().get("res/graphics/pokemon/absol.png", Texture.class);
-		Texture braviary = app.getAssetManager().get("res/graphics/pokemon/braviary.png", Texture.class);
+		Texture lucario = app.getAssetManager().get("res/graphics/pokemon/lucario.png", Texture.class);
+		Texture arceus = app.getAssetManager().get("res/graphics/pokemon/arceus.png", Texture.class);
+		Texture magikarp = app.getAssetManager().get("res/graphics/pokemon/magikarp.png", Texture.class);
 
 
 		Trainer playerTrainer = BattleScreen.playerTrainer;
 
-		opponentTrainer = new Trainer(Pokemon.generatePokemon("Angad's Absol", absol, app.getMoveDatabase(), 10));
-		opponentTrainer.addPokemon(Pokemon.generatePokemon("Angad's Braviary ", braviary, app.getMoveDatabase(), 10));
+		opponentTrainer = new Trainer(Pokemon.generatePokemon("Kiyoi's Pokemon XXX", magikarp, app.getMoveDatabase(), 15));
+		opponentTrainer.addPokemon(Pokemon.generatePokemon("Kiyoi's Pokemon YYY ", lucario, app.getMoveDatabase(), 15));
+		opponentTrainer.addPokemon(Pokemon.generatePokemon("Kiyoi's Pokemon ZZZ ", arceus, app.getMoveDatabase(), 15));
+
 
 		battle = new Battle(
 				playerTrainer,
@@ -140,10 +137,7 @@ public class AngadBattleScreen extends AbstractScreen implements BattleEventPlay
 	public void update(float delta) {
 		/* DEBUG */
 		if (temp && battle.getState() == WIN){
-			angad_defeated = true;
-			BattleScreen.playerTrainer.addPokemon(opponentTrainer.getPokemon(0));
-			BattleScreen.addLevelPoke();
-			temp = false;
+			kiyoi_defeated = true;
 		}
 		if (Gdx.input.isKeyJustPressed(Keys.F9)) {
 			uiDebug = !uiDebug;
@@ -153,7 +147,17 @@ public class AngadBattleScreen extends AbstractScreen implements BattleEventPlay
 			battleDebug = !battleDebug;
 		}
 //		if(Gdx.input.isKeyJustPressed(Keys.F5)) {
-
+//			getApp().startTransition(
+//					this,
+//					getApp().getGameScreen(),
+//					new FadeOutTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
+//					new FadeInTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
+//					new Action(){
+//						@Override
+//						public void action() {
+//							System.out.println("test");
+//						}
+//					});
 //		}
 
 		while (currentEvent == null || currentEvent.finished()) { // no active event
@@ -167,38 +171,11 @@ public class AngadBattleScreen extends AbstractScreen implements BattleEventPlay
 				} else if (battle.getState() == STATE.READY_TO_PROGRESS) {
 					controller.restartTurn();
 				} else if (battle.getState() == WIN) {
-					getApp().startTransition(
-							this,
-							getApp().getGameScreen(),
-							new FadeOutTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
-							new FadeInTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
-							new Action(){
-								@Override
-								public void action() {
-								}
-							});
+					getApp().setScreen(getApp().getGameScreen());
 				} else if (battle.getState() == STATE.LOSE) {
-					getApp().startTransition(
-							this,
-							getApp().getGameScreen(),
-							new FadeOutTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
-							new FadeInTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
-							new Action(){
-								@Override
-								public void action() {
-								}
-							});
+					getApp().setScreen(getApp().getGameScreen());
 				} else if (battle.getState() == STATE.RAN) {
-					getApp().startTransition(
-							this,
-							getApp().getGameScreen(),
-							new FadeOutTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
-							new FadeInTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
-							new Action(){
-								@Override
-								public void action() {
-								}
-							});
+					getApp().setScreen(getApp().getGameScreen());
 				}
 				break;
 			} else {					// event queued up

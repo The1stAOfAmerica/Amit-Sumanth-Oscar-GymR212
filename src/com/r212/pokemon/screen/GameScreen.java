@@ -9,6 +9,8 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
@@ -27,6 +29,7 @@ import com.r212.pokemon.dialogue.DialogueNode;
 import com.r212.pokemon.dialogue.LinearDialogueNode;
 import com.r212.pokemon.model.Camera;
 import com.r212.pokemon.model.DIRECTION;
+import com.r212.pokemon.model.Tile;
 import com.r212.pokemon.model.actor.Actor;
 import com.r212.pokemon.model.actor.LimitedWalkingBehavior;
 import com.r212.pokemon.model.actor.PlayerActor;
@@ -61,8 +64,10 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 	private BattleScreen battleScreen;
 	private boolean angad_done = true;
 	private boolean brady_done = true;
+	private boolean kiyoi_done = true;
 	private Actor Angad;
 	private Actor Brady;
+	private Actor Kiyoi;
 	
 	private HashMap<String, World> worlds = new HashMap<String, World>();
 	private World world;
@@ -75,7 +80,10 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 	private CutsceneEvent currentEvent;
 	
 	private SpriteBatch batch;
-	
+
+	public static Music background = Gdx.audio.newMusic(Gdx.files.internal("res/audio/background.wav"));
+	public static Music brady_battle_music = Gdx.audio.newMusic(Gdx.files.internal("res/audio/bradybattle.wav"));
+
 	private Viewport gameViewport;
 	
 	private WorldRenderer worldRenderer;
@@ -161,7 +169,7 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 		player = new PlayerActor(world, world.getSafeX(), world.getSafeY(), animations, this);
 		world.addActor(player);
 
-		Actor Celine = new Actor(world, 9, 6, celineanimation);
+		Actor Celine = new Actor(world, 9, 2, celineanimation);
 		LimitedWalkingBehavior celinemove = new LimitedWalkingBehavior(Celine, 10, 10, 10, 10, 0.3f, 1f, new Random());
 		Dialogue ctalk = new Dialogue();
 		ctalk.addNode(new LinearDialogueNode("Hi! Im Celine", 0, 1));
@@ -175,19 +183,32 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 		LimitedWalkingBehavior angadsbrain = new LimitedWalkingBehavior(Angad, 0, 0, 0, 0, 0.3f, 1f, new Random());
 		world.addActor(Angad, angadsbrain);
 		Dialogue agreeting = new Dialogue();
-		DialogueNode speak = new LinearDialogueNode("<Angad Dialogue>", 0);
-		agreeting.addNode(speak);
+		agreeting.addNode(new LinearDialogueNode("<Angad Dialogue>", 0));
 		Angad.setDialogue(agreeting);
+//		Angad.refaceWithoutAnimation(DIRECTION.EAST);
+
 
 		Brady = new Actor(world, 14, 11, bradyanimation);
-
 		Brady.setName("Brady");
 		LimitedWalkingBehavior bradysbrain = new LimitedWalkingBehavior(Angad, 0, 0, 0, 0, 0.3f, 1f, new Random());
 		world.addActor(Brady, bradysbrain);
 		Dialogue bgreeting = new Dialogue();
-		DialogueNode bspeak = new LinearDialogueNode("<Brady Dialogue>", 0);
-		bgreeting.addNode(bspeak);
+		bgreeting.addNode(new LinearDialogueNode("<Brady Dialogue>", 0));
 		Brady.setDialogue(bgreeting);
+		Brady.refaceWithoutAnimation(DIRECTION.WEST);
+
+		Kiyoi = new Actor(world, 18, 2, angadanimation);
+		Kiyoi.setName("Kiyoi");
+		Dialogue kiyoitalk = new Dialogue();
+		kiyoitalk.addNode(new LinearDialogueNode("You dare challange me you mortal!", 0));
+		Kiyoi.setDialogue(kiyoitalk);
+
+		background.setVolume(.2f);
+		brady_battle_music.setVolume(.2f);
+		background.setLooping(true);
+
+
+
 
 		initUI();
 
@@ -234,16 +255,22 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 	
 	@Override
 	public void update(float delta) {
-		if (!dialogueBox.isVisible() && temp && (angad_defeated && !angad_done) && (brady_defeated && !brady_done)){
-
+		Tile target = player.getWorld().getMap().getTile(player.getX()+player.getFacing().getDX(), player.getY()+player.getFacing().getDY());
+		if (target.getActor() == null && temp && (angad_defeated && !angad_done) && (brady_defeated && !brady_done)){
 			Dialogue kiyoi = new Dialogue();
 			kiyoi.addNode(new LinearDialogueNode("...", 0, 1));
-			kiyoi.addNode(new LinearDialogueNode("What is that?", 1, 2));
+			kiyoi.addNode(new LinearDialogueNode("Who is that?", 1, 2));
 			kiyoi.addNode(new LinearDialogueNode("Is that Mr. Kiyoi???", 2));
+//			player.refaceWithoutAnimation(DIRECTION.EAST);
 			dialogueController.kiyoiDialogueStart(kiyoi);
+			world.addActor(Kiyoi);
+			camera.update(18, 2);
 			temp = false;
+			kiyoi_done = false;
+
 		}
 		if((angad_done && angad_defeated) || Gdx.input.isKeyJustPressed(Keys.F5)){
+			background.play();
 			System.out.println("STATUS UPDATE: Angad has been defeated");
 			Dialogue nomoreangad = new Dialogue();
 			nomoreangad.addNode(new LinearDialogueNode("<Angad End Dialogue>", 0));
@@ -252,6 +279,8 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 			angad_defeated = true;
 		}
 		if((brady_done && brady_defeated) || Gdx.input.isKeyJustPressed(Keys.F5)){
+			brady_battle_music.stop();
+			background.play();
 			System.out.println("STATUS UPDATE: Brady has been defeated");
 			Dialogue nomorebrady = new Dialogue();
 			nomorebrady.addNode(new LinearDialogueNode("<Brady End Dialogue>", 0));
@@ -294,9 +323,28 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 		storylineController.update(delta);
 		dialogueController.update(delta);
 		
-		if (!dialogueBox.isVisible()) {
+		if (!dialogueBox.isVisible() && kiyoi_done) {
 			camera.update(player.getWorldX()+0.5f, player.getWorldY()+0.5f);
 			world.update(delta);
+		}
+		if (!dialogueBox.isVisible() && !kiyoi_done) {
+			camera.update(Kiyoi.getWorldX()+0.5f, Kiyoi.getWorldY()+0.5f);
+			world.update(delta);
+		}
+		if(!kiyoi_done && Kiyoi.getY() <= 7){
+			Kiyoi.move(DIRECTION.NORTH);
+		}
+		if(!kiyoi_done && Kiyoi.getY() == 8 && Kiyoi.getX() >= 7){
+			Kiyoi.move(DIRECTION.WEST);
+		}
+		if(!kiyoi_done && Kiyoi.getY() <= 11 && Kiyoi.getX() == 6){
+			Kiyoi.move(DIRECTION.NORTH);
+		}
+		if(!kiyoi_done && Kiyoi.getY() == 12 && Kiyoi.getX() >= 2){
+			Kiyoi.move(DIRECTION.WEST);
+		}
+		if (!kiyoi_done && Kiyoi.getX() == 2 && Kiyoi.getY() == 12){
+			kiyoi_done = true;
 		}
 		uiStage.act(delta);
 	}

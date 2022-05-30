@@ -1,4 +1,4 @@
-littleroot_town	20 15		    18	2
+littleroot_town	21 15		    18	2
 
 fillTerrain				INDOOR_TILES
 
@@ -106,6 +106,57 @@ unwalkable		16	0
 unwalkable		17	0
 unwalkable		18	0
 unwalkable		19	0
+unwalkable		0	14
+unwalkable		1	14
+unwalkable		2	14
+unwalkable		3	14
+unwalkable		4	14
+unwalkable		5	14
+unwalkable		6   14
+unwalkable		7	14
+unwalkable		8	14
+unwalkable		9	14
+unwalkable		10	14
+unwalkable		11	14
+unwalkable		12	14
+unwalkable		13	14
+unwalkable		14	14
+unwalkable		15	14
+unwalkable		16	14
+unwalkable		17	14
+unwalkable		18	14
+unwalkable		19	14
+unwalkable      20  0
+unwalkable      20  1
+unwalkable      20  2
+unwalkable      20  3
+unwalkable      20  4
+unwalkable      20  5
+unwalkable      20  6
+unwalkable      20  7
+unwalkable      20  8
+unwalkable      20  9
+unwalkable      20  10
+unwalkable      20  11
+unwalkable      20  12
+unwalkable      20  13
+unwalkable      20  14
+
+setTerrain      20  0   NONE
+setTerrain      20  1   NONE
+setTerrain      20  2   NONE
+setTerrain      20  3   NONE
+setTerrain      20  4   NONE
+setTerrain      20  5   NONE
+setTerrain      20  6   NONE
+setTerrain      20  7   NONE
+setTerrain      20  8   NONE
+setTerrain      20  9   NONE
+setTerrain      20  10   NONE
+setTerrain      20  11   NONE
+setTerrain      20  12   NONE
+setTerrain      20  13   NONE
+setTerrain      20  14   NONE
 
 
 

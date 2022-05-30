@@ -35,6 +35,7 @@ public class Tile {
 		return actor;
 	}
 
+
 	public void setActor(Actor actor) {
 		this.actor = actor;
 	}
@@ -61,4 +62,7 @@ public class Tile {
 	public boolean actorBeforeStep(Actor a) {
 		return true;
 	}
+
 }
+
+

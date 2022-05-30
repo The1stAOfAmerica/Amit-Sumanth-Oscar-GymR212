@@ -49,11 +49,11 @@ public class BattleScreenController extends InputAdapter {
 		}
 		if (this.state == STATE.USE_NEXT_POKEMON && optionBox.isVisible()) {
 			if (keycode == Keys.UP || keycode == Keys.W) {
-				optionBox.moveUp();
-			} else if (keycode == Keys.DOWN  || keycode == Keys.S) {
-				optionBox.moveDown();
-			} else if (keycode == Keys.ENTER) {
-				if (optionBox.getIndex() == 0) { // YES selected
+					optionBox.moveUp();
+				} else if (keycode == Keys.DOWN  || keycode == Keys.S) {
+					optionBox.moveDown();
+				} else if (keycode == Keys.ENTER) {
+					if (optionBox.getIndex() == 0) { // YES selected
 
 
 					/*

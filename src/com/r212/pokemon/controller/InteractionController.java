@@ -26,6 +26,7 @@ public class InteractionController extends InputAdapter {
 		this.dialogueController = dialogueController;
 		this.game = game;
 		this.storylineController = storylineController;
+
 	}
 
 	@Override

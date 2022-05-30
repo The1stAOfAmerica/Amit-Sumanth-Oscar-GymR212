@@ -10,6 +10,8 @@ import com.r212.pokemon.screen.transition.FadeInTransition;
 import com.r212.pokemon.screen.transition.FadeOutTransition;
 import com.r212.pokemon.util.Action;
 
+import static com.r212.pokemon.screen.GameScreen.background;
+
 public class InfoScreen extends AbstractScreen {
 
 
@@ -81,7 +83,7 @@ public class InfoScreen extends AbstractScreen {
                         @Override
                         public void action() {
                             System.out.println("STATUS UPDATE: Player has entered the realm of R212");
-
+                            background.play();
                         }
                     });
         }

@@ -283,6 +283,10 @@ public class Actor implements YSortable {
 	public int getX() {
 		return x;
 	}
+	public boolean outOfBounds(){
+//		System.out.println(x + ", " + y + ": " + (x >= 19 || x <= -8 || y >= 8));
+		return (x >= 19 || x <= -8 || y >= 8);
+	}
 
 	public int getY() {
 		return y;
