@@ -22,6 +22,8 @@ import com.r212.pokemon.battle.animation.BattleAnimation;
 import com.r212.pokemon.battle.event.BattleEvent;
 import com.r212.pokemon.battle.event.BattleEventPlayer;
 import com.r212.pokemon.controller.BattleScreenController;
+import com.r212.pokemon.dialogue.Dialogue;
+import com.r212.pokemon.dialogue.LinearDialogueNode;
 import com.r212.pokemon.model.Pokemon;
 import com.r212.pokemon.screen.renderer.BattleDebugRenderer;
 import com.r212.pokemon.screen.renderer.BattleRenderer;
@@ -35,6 +37,7 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 
 import static com.r212.pokemon.battle.Battle.STATE.WIN;
+import static com.r212.pokemon.screen.GameScreen.Brady;
 
 /**
  * @author r212
@@ -176,11 +179,15 @@ public class BradyBattleScreen extends AbstractScreen implements BattleEventPlay
 					getApp().startTransition(
 							this,
 							getApp().getGameScreen(),
-							new FadeOutTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
-							new FadeInTransition(0.5f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
+							new FadeOutTransition(0.1f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
+							new FadeInTransition(0.1f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
 							new Action(){
 								@Override
 								public void action() {
+//									System.out.println("ith");
+//									Dialogue nomorebrady = new Dialogue();
+//									nomorebrady.addNode(new LinearDialogueNode("Wow! You were really good! \nI think you deserve my Machamp much more than I do!", 0));
+//									Brady.setDialogue(nomorebrady);
 								}
 							});
 				} else if (battle.getState() == STATE.LOSE) {

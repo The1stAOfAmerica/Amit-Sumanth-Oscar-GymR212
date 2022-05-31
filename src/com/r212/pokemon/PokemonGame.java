@@ -66,6 +66,8 @@ public class PokemonGame extends Game {
 	public ShapeRenderer shapeRenderer;
 	public BitmapFont font;
 	private IntroScreen introScreen;
+	private BradyBattleScreen bradyBattleScreen;
+	private AngadBattleScreen angadBattleScreen;
 
 	@Override
 	public void create() {
@@ -157,6 +159,8 @@ public class PokemonGame extends Game {
 
 		battleScreen = new BattleScreen(this);
 		gameScreen = new GameScreen(this);
+		bradyBattleScreen = new BradyBattleScreen(this);
+		angadBattleScreen = new AngadBattleScreen(this);
 		transitionScreen = new TransitionScreen(this);
 		introScreen = new IntroScreen(this);
 

@@ -65,9 +65,9 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 	private boolean angad_done = true;
 	private boolean brady_done = true;
 	private boolean kiyoi_done = true;
-	private Actor Angad;
-	private Actor Brady;
-	private Actor Kiyoi;
+	public static Actor Angad;
+	public static Actor Brady;
+	public static Actor Kiyoi;
 	
 	private HashMap<String, World> worlds = new HashMap<String, World>();
 	private World world;
@@ -83,6 +83,8 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 
 	public static Music background = Gdx.audio.newMusic(Gdx.files.internal("res/audio/background.wav"));
 	public static Music brady_battle_music = Gdx.audio.newMusic(Gdx.files.internal("res/audio/bradybattle.wav"));
+	public static Music angad_battle_music = Gdx.audio.newMusic(Gdx.files.internal("res/audio/angadbattle.wav"));
+	public static Music kiyoi_battle1_music = Gdx.audio.newMusic(Gdx.files.internal("res/audio/kiyoibattle1.wav"));
 
 	private Viewport gameViewport;
 	
@@ -183,7 +185,7 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 		LimitedWalkingBehavior angadsbrain = new LimitedWalkingBehavior(Angad, 0, 0, 0, 0, 0.3f, 1f, new Random());
 		world.addActor(Angad, angadsbrain);
 		Dialogue agreeting = new Dialogue();
-		agreeting.addNode(new LinearDialogueNode("<Angad Dialogue>", 0));
+		agreeting.addNode(new LinearDialogueNode("You smelly person. You cannot beat me. \nBut alas, to satisfy your puny desire, \nI will face off against you", 0));
 		Angad.setDialogue(agreeting);
 //		Angad.refaceWithoutAnimation(DIRECTION.EAST);
 
@@ -193,18 +195,20 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 		LimitedWalkingBehavior bradysbrain = new LimitedWalkingBehavior(Angad, 0, 0, 0, 0, 0.3f, 1f, new Random());
 		world.addActor(Brady, bradysbrain);
 		Dialogue bgreeting = new Dialogue();
-		bgreeting.addNode(new LinearDialogueNode("<Brady Dialogue>", 0));
+		bgreeting.addNode(new LinearDialogueNode("You're bouta get Poke'd!", 0));
 		Brady.setDialogue(bgreeting);
 		Brady.refaceWithoutAnimation(DIRECTION.WEST);
 
 		Kiyoi = new Actor(world, 18, 2, angadanimation);
 		Kiyoi.setName("Kiyoi");
 		Dialogue kiyoitalk = new Dialogue();
-		kiyoitalk.addNode(new LinearDialogueNode("You dare challange me you mortal!", 0));
+		kiyoitalk.addNode(new LinearDialogueNode("What do you mean, curve?", 0));
 		Kiyoi.setDialogue(kiyoitalk);
 
 		background.setVolume(.2f);
 		brady_battle_music.setVolume(.2f);
+		angad_battle_music.setVolume(.2f);
+		kiyoi_battle1_music.setVolume(.2f);
 		background.setLooping(true);
 
 
@@ -257,6 +261,8 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 	public void update(float delta) {
 		Tile target = player.getWorld().getMap().getTile(player.getX()+player.getFacing().getDX(), player.getY()+player.getFacing().getDY());
 		if (target.getActor() == null && temp && (angad_defeated && !angad_done) && (brady_defeated && !brady_done)){
+			background.stop();
+
 			Dialogue kiyoi = new Dialogue();
 			kiyoi.addNode(new LinearDialogueNode("...", 0, 1));
 			kiyoi.addNode(new LinearDialogueNode("Who is that?", 1, 2));
@@ -269,11 +275,12 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 			kiyoi_done = false;
 
 		}
-		if((angad_done && angad_defeated) || Gdx.input.isKeyJustPressed(Keys.F5)){
+		if((angad_done && angad_defeated) || Gdx.input.isKeyJustPressed(Keys.F6)){
+			angad_battle_music.stop();
 			background.play();
 			System.out.println("STATUS UPDATE: Angad has been defeated");
 			Dialogue nomoreangad = new Dialogue();
-			nomoreangad.addNode(new LinearDialogueNode("<Angad End Dialogue>", 0));
+			nomoreangad.addNode(new LinearDialogueNode("Hmmph this was a fluke. Nonetheless, as an \nambassador of good sportmanship, \nI will gift you my Absol.", 0));
 			Angad.setDialogue(nomoreangad);
 			angad_done = false;
 			angad_defeated = true;
@@ -283,7 +290,7 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 			background.play();
 			System.out.println("STATUS UPDATE: Brady has been defeated");
 			Dialogue nomorebrady = new Dialogue();
-			nomorebrady.addNode(new LinearDialogueNode("<Brady End Dialogue>", 0));
+			nomorebrady.addNode(new LinearDialogueNode("Daaamn bro YOU Poke'd ME! \nI think you deserve my Machamp much more than I do!", 0));
 			Brady.setDialogue(nomorebrady);
 			brady_done = false;
 			brady_defeated = true;

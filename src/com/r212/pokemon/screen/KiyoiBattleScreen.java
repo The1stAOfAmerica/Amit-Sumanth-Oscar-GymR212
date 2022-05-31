@@ -59,6 +59,8 @@ public class KiyoiBattleScreen extends AbstractScreen implements BattleEventPlay
 
 	private Viewport gameViewport;
 
+	public static boolean kiyoitemp;
+
 	private SpriteBatch batch;
 	private BattleRenderer battleRenderer;
 	private BattleDebugRenderer battleDebugRenderer;
@@ -90,15 +92,12 @@ public class KiyoiBattleScreen extends AbstractScreen implements BattleEventPlay
 		batch = new SpriteBatch();
 
 		Texture lucario = app.getAssetManager().get("res/graphics/pokemon/lucario.png", Texture.class);
-		Texture arceus = app.getAssetManager().get("res/graphics/pokemon/arceus.png", Texture.class);
 		Texture magikarp = app.getAssetManager().get("res/graphics/pokemon/magikarp.png", Texture.class);
-
 
 		Trainer playerTrainer = BattleScreen.playerTrainer;
 
 		opponentTrainer = new Trainer(Pokemon.generatePokemon("Kiyoi's Pokemon XXX", magikarp, app.getMoveDatabase(), 15));
 		opponentTrainer.addPokemon(Pokemon.generatePokemon("Kiyoi's Pokemon YYY ", lucario, app.getMoveDatabase(), 15));
-		opponentTrainer.addPokemon(Pokemon.generatePokemon("Kiyoi's Pokemon ZZZ ", arceus, app.getMoveDatabase(), 15));
 
 
 		battle = new Battle(
@@ -115,6 +114,7 @@ public class KiyoiBattleScreen extends AbstractScreen implements BattleEventPlay
 		initUI();
 		controller = new BattleScreenController(battle, queue, dialogueBox, moveSelectBox, optionBox);
 		battle.beginBattle();
+		kiyoitemp = true;
 
 	}
 

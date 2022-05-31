@@ -1,30 +1,17 @@
 package com.r212.pokemon.battle;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.r212.pokemon.battle.animation.FaintingAnimation;
 import com.r212.pokemon.battle.animation.PokeballAnimation;
-import com.r212.pokemon.battle.event.AnimationBattleEvent;
-import com.r212.pokemon.battle.event.BattleEvent;
-import com.r212.pokemon.battle.event.BattleEventQueuer;
-import com.r212.pokemon.battle.event.BattleEventPlayer;
-import com.r212.pokemon.battle.event.HPAnimationEvent;
-import com.r212.pokemon.battle.event.NameChangeEvent;
-import com.r212.pokemon.battle.event.PokeSpriteEvent;
-import com.r212.pokemon.battle.event.TextEvent;
+import com.r212.pokemon.battle.event.*;
 import com.r212.pokemon.battle.moves.Move;
-import com.r212.pokemon.controller.BattleScreenController;
 import com.r212.pokemon.model.Pokemon;
-
-import static com.r212.pokemon.screen.KiyoiBattleScreen.kiyoitemp;
 
 /**
  * A 100% real Pokemon fight! Right in your livingroom.
  *
  * @author r212
  */
-public class Battle implements BattleEventQueuer {
+public class KiyoiBattle implements BattleEventQueuer {
 
 	public enum STATE {
 		READY_TO_PROGRESS,
@@ -46,7 +33,7 @@ public class Battle implements BattleEventQueuer {
 
 	private BattleEventPlayer eventPlayer;
 
-	public Battle(Trainer player, Pokemon opponent) {
+	public KiyoiBattle(Trainer player, Pokemon opponent) {
 		this.playerTrainer = player;
 		this.player = player.getPokemon(0);
 		this.opponent = opponent;
@@ -54,7 +41,7 @@ public class Battle implements BattleEventQueuer {
 		this.state = STATE.READY_TO_PROGRESS;
 	}
 
-	public Battle(Trainer player, Trainer opponent) {
+	public KiyoiBattle(Trainer player, Trainer opponent) {
 		this.playerTrainer = player;
 		this.player = player.getPokemon(0);
 		this.opponentTrainer = opponent;
@@ -224,8 +211,7 @@ public class Battle implements BattleEventQueuer {
 			//	}
 			//}
 			if(!anyoneAlive) {
-				if (kiyoitemp) queueEvent(new TextEvent("Fine. It's time to get serious.", true));
-				else queueEvent(new TextEvent("Congratulations! You Win!", true));
+				queueEvent(new TextEvent("Fine. It's time to get serious.", true));
 				this.state = STATE.WIN;
 			}
 		}
