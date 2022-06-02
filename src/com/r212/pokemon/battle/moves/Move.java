@@ -26,7 +26,7 @@ public abstract class Move {
 	
 	public int useMove(BattleMechanics mechanics, Pokemon user, Pokemon target, BATTLE_PARTY party, BattleEventQueuer broadcaster) {
 //		System.out.println(target.getLevel());
-		int damage = mechanics.calculateDamage(this, user, target);
+		int damage = mechanics.calculateDamage(this, user, target) * (int)(1+(0.2*user.getLevel()));
 				//(int)(1+(0.2*user.getLevel()));
 		target.applyDamage(damage);
 		return damage;

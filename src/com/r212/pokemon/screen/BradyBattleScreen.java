@@ -36,6 +36,7 @@ import com.r212.pokemon.util.Action;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
+import static com.r212.pokemon.battle.Battle.STATE.LOSE;
 import static com.r212.pokemon.battle.Battle.STATE.WIN;
 import static com.r212.pokemon.screen.GameScreen.Brady;
 
@@ -138,7 +139,7 @@ public class BradyBattleScreen extends AbstractScreen implements BattleEventPlay
 	@Override
 	public void update(float delta) {
 		/* DEBUG */
-		if (temp && battle.getState() == WIN){
+		if (temp && (battle.getState() == WIN || battle.getState() == LOSE)){
 			brady_defeated = true;
 			BattleScreen.playerTrainer.addPokemon(opponentTrainer.getPokemon(0));
 			BattleScreen.addLevelPoke();
@@ -188,9 +189,10 @@ public class BradyBattleScreen extends AbstractScreen implements BattleEventPlay
 //									Dialogue nomorebrady = new Dialogue();
 //									nomorebrady.addNode(new LinearDialogueNode("Wow! You were really good! \nI think you deserve my Machamp much more than I do!", 0));
 //									Brady.setDialogue(nomorebrady);
+//									Brady.setVisible(true);
 								}
 							});
-				} else if (battle.getState() == STATE.LOSE) {
+				} else if (battle.getState() == LOSE) {
 					getApp().startTransition(
 							this,
 							getApp().getGameScreen(),

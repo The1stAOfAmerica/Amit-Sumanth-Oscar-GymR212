@@ -6,12 +6,14 @@ import java.util.HashMap;
 import java.util.Queue;
 import java.util.Random;
 
+import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -23,6 +25,10 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.r212.pokemon.PokemonGame;
+import com.r212.pokemon.battle.BATTLE_PARTY;
+import com.r212.pokemon.battle.animation.BattleAnimation;
+import com.r212.pokemon.battle.event.BattleEvent;
+import com.r212.pokemon.battle.event.BattleEventPlayer;
 import com.r212.pokemon.controller.*;
 import com.r212.pokemon.dialogue.Dialogue;
 import com.r212.pokemon.dialogue.DialogueNode;
@@ -43,17 +49,20 @@ import com.r212.pokemon.screen.transition.FadeInTransition;
 import com.r212.pokemon.screen.transition.FadeOutTransition;
 import com.r212.pokemon.ui.DialogueBox;
 import com.r212.pokemon.ui.OptionBox;
+import com.r212.pokemon.ui.StatusBox;
 import com.r212.pokemon.util.Action;
 import com.r212.pokemon.util.AnimationSet;
 import org.lwjgl.Sys;
 
 import static com.r212.pokemon.screen.AngadBattleScreen.angad_defeated;
 import static com.r212.pokemon.screen.BradyBattleScreen.brady_defeated;
+import static com.r212.pokemon.screen.KiyoiBattleScreen.kiyoi_defeated;
+import static com.r212.pokemon.screen.KiyoiBattleScreen2.kiyoi_twice_defeated;
 
 /**
  * @author r212
  */
-public class GameScreen extends AbstractScreen implements CutscenePlayer {
+public class GameScreen extends AbstractScreen implements CutscenePlayer, BattleEventPlayer {
 
 	private InputMultiplexer multiplexer;
 	private DialogueController dialogueController;
@@ -68,7 +77,13 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 	public static Actor Angad;
 	public static Actor Brady;
 	public static Actor Kiyoi;
-	
+
+	public static Dialogue endBradyDialogue = new Dialogue();
+	public static Dialogue endAngadDialogue = new Dialogue();
+	public static Dialogue endKiyoiDialogue = new Dialogue();
+
+
+
 	private HashMap<String, World> worlds = new HashMap<String, World>();
 	private World world;
 	private PlayerActor player;
@@ -81,10 +96,13 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 	
 	private SpriteBatch batch;
 
-	public static Music background = Gdx.audio.newMusic(Gdx.files.internal("res/audio/background.wav"));
-	public static Music brady_battle_music = Gdx.audio.newMusic(Gdx.files.internal("res/audio/bradybattle.wav"));
-	public static Music angad_battle_music = Gdx.audio.newMusic(Gdx.files.internal("res/audio/angadbattle.wav"));
-	public static Music kiyoi_battle1_music = Gdx.audio.newMusic(Gdx.files.internal("res/audio/kiyoibattle1.wav"));
+	public static Music background = Gdx.audio.newMusic(Gdx.files.internal("res/audio/background.mp3"));
+	public static Music brady_battle_music = Gdx.audio.newMusic(Gdx.files.internal("res/audio/background.mp3"));
+	public static Music angad_battle_music = Gdx.audio.newMusic(Gdx.files.internal("res/audio/background.mp3"));
+	public static Music kiyoi_battle1_music = Gdx.audio.newMusic(Gdx.files.internal("res/audio/background.mp3"));
+	//public static Music brady_battle_music = Gdx.audio.newMusic(Gdx.files.internal("res/audio/bradybattle.wav"));
+	//public static Music angad_battle_music = Gdx.audio.newMusic(Gdx.files.internal("res/audio/angadbattle.wav"));
+	//public static Music kiyoi_battle1_music = Gdx.audio.newMusic(Gdx.files.internal("res/audio/kiyoibattle1.wav"));
 
 	private Viewport gameViewport;
 	
@@ -92,9 +110,10 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 	private EventQueueRenderer queueRenderer; // renders cutscenequeue
 	private TileInfoRenderer tileInfoRenderer;
 	private boolean renderTileInfo = false;
+	private Queue<BattleEvent> queue = new ArrayDeque<BattleEvent>();
 	
 	private int uiScale = 2;
-	
+	private boolean bradyDialogueDone = false;
 	private Stage uiStage;
 	private Table dialogRoot;	// root table used for dialogues
 	private Table menuRoot;		// root table used for menus (i.e. debug menu)
@@ -259,6 +278,9 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 	
 	@Override
 	public void update(float delta) {
+		if (Gdx.input.isKeyJustPressed(Keys.ENTER)) {
+			dialogueBox.setVisible(false);
+		}
 		Tile target = player.getWorld().getMap().getTile(player.getX()+player.getFacing().getDX(), player.getY()+player.getFacing().getDY());
 		if (target.getActor() == null && temp && (angad_defeated && !angad_done) && (brady_defeated && !brady_done)){
 			background.stop();
@@ -280,21 +302,56 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 			background.play();
 			System.out.println("STATUS UPDATE: Angad has been defeated");
 			Dialogue nomoreangad = new Dialogue();
-			nomoreangad.addNode(new LinearDialogueNode("Hmmph this was a fluke. Nonetheless, as an \nambassador of good sportmanship, \nI will gift you my Absol.", 0));
+			nomoreangad.addNode(new LinearDialogueNode("This was JUST a fluke. Take this Absol and leave!", 0));
 			Angad.setDialogue(nomoreangad);
+			displayNextDialogue("Shut up...Just shut up...");
 			angad_done = false;
 			angad_defeated = true;
+		}
+		else {
+			endAngadDialogue.addNode(new LinearDialogueNode("It pains me to say you're not bad...", 0));
+			Angad.setDialogue(endAngadDialogue);
 		}
 		if((brady_done && brady_defeated) || Gdx.input.isKeyJustPressed(Keys.F5)){
 			brady_battle_music.stop();
 			background.play();
-			System.out.println("STATUS UPDATE: Brady has been defeated");
-			Dialogue nomorebrady = new Dialogue();
-			nomorebrady.addNode(new LinearDialogueNode("Daaamn bro YOU Poke'd ME! \nI think you deserve my Machamp much more than I do!", 0));
-			Brady.setDialogue(nomorebrady);
+			System.out.println("STATUS UPDATE: Brady has been defeated");;
+			endBradyDialogue.addNode(new LinearDialogueNode("I think you deserve my Machamp much more than I do!", 0));
+			Brady.setDialogue(endBradyDialogue);
+			displayNextDialogue("Daaamn bro YOU Poke'd ME!");;
 			brady_done = false;
 			brady_defeated = true;
 		}
+//		else if (!brady_done){
+//			endBradyDialogue.addNode(new LinearDialogueNode("Yo you got teach me your moves.", 0));
+//			Brady.setDialogue(endBradyDialogue);
+//		}
+		if((kiyoi_done && kiyoi_defeated) || Gdx.input.isKeyJustPressed(Keys.F7)){
+			brady_battle_music.stop();
+			background.play();
+			System.out.println("STATUS UPDATE: Kiyoi has been defeated");
+			Dialogue nomorebrady = new Dialogue();
+			nomorebrady.addNode(new LinearDialogueNode("Let go", 0));
+			Brady.setDialogue(nomorebrady);
+			displayNextDialogue("Daaamn bro YOU Poke'd ME!");;
+			brady_done = false;
+			brady_defeated = true;
+		}
+		else if ((kiyoi_twice_defeated) || Gdx.input.isKeyJustPressed(Keys.F8)){
+			brady_battle_music.stop();
+			background.play();
+			System.out.println("STATUS UPDATE: Kiyoi2 has been defeated");
+			Dialogue nomorebrady = new Dialogue();
+			nomorebrady.addNode(new LinearDialogueNode("I think you deserve my Machamp much more than I do!", 0));
+			Brady.setDialogue(nomorebrady);
+			displayNextDialogue("Daaamn bro YOU Poke'd ME!");;
+			brady_done = false;
+			brady_defeated = true;
+		}
+//		else {
+//			endKiyoiDialogue.addNode(new LinearDialogueNode("Yo you got teach me your moves.", 0));
+//			Kiyoi.setDialogue(endKiyoiDialogue);
+//		}
 //		if(Gdx.input.isKeyJustPressed(Keys.F5)) {
 //			getApp().startTransition(
 //					this,
@@ -419,8 +476,8 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 						.align(Align.bottom)
 						.space(8f)
 						.row();
-		
-		
+
+
 		dialogRoot.add(dialogTable).expand().align(Align.bottom);
 		
 		/*
@@ -437,6 +494,11 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 		menuTable.add(debugBox).expand().align(Align.top | Align.left);
 		
 		menuRoot.add(menuTable).expand().fill();
+	}
+
+	public void displayNextDialogue(String text) {
+		dialogueBox.setVisible(true);
+		dialogueBox.animateText(text);
 	}
 	
 	public void changeWorld(World newWorld, int x, int y, DIRECTION face) {
@@ -471,4 +533,41 @@ public class GameScreen extends AbstractScreen implements CutscenePlayer {
 	public void queueEvent(CutsceneEvent event) {
 		eventQueue.add(event);
 	}
+
+	@Override
+	public void setPokemonSprite(Texture region, BATTLE_PARTY party) {
+
+	}
+
+	@Override
+	public StatusBox getStatusBox(BATTLE_PARTY party) {
+		return null;
+	}
+
+
+	@Override
+	public TweenManager getTweenManager() {
+		return null;
+	}
+
+	@Override
+	public void queueEvent(BattleEvent event) {
+		queue.add(event);
+	}
+
+	@Override
+	public DialogueBox getDialogueBox() {
+		return dialogueBox;
+	}
+
+	@Override
+	public BattleAnimation getBattleAnimation() {
+		return null;
+	}
+
+	@Override
+	public void playBattleAnimation(BattleAnimation animation, BATTLE_PARTY party) {
+			}
+
+
 }

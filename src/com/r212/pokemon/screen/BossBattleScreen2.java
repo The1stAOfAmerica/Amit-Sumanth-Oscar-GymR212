@@ -3,6 +3,7 @@ package com.r212.pokemon.screen;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -25,7 +26,10 @@ import com.r212.pokemon.model.Pokemon;
 import com.r212.pokemon.screen.renderer.BattleDebugRenderer;
 import com.r212.pokemon.screen.renderer.BattleRenderer;
 import com.r212.pokemon.screen.renderer.EventQueueRenderer;
+import com.r212.pokemon.screen.transition.FadeInTransition;
+import com.r212.pokemon.screen.transition.FadeOutTransition;
 import com.r212.pokemon.ui.*;
+import com.r212.pokemon.util.Action;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -35,7 +39,7 @@ import static com.r212.pokemon.battle.Battle.STATE.WIN;
 /**
  * @author r212
  */
-public class KiyoiBattleScreen2 extends AbstractScreen implements BattleEventPlayer {
+public class BossBattleScreen2 extends AbstractScreen implements BattleEventPlayer {
 
     /* Controller */
     private BattleScreenController controller;
@@ -81,20 +85,24 @@ public class KiyoiBattleScreen2 extends AbstractScreen implements BattleEventPla
     /* DEBUG */
     private boolean uiDebug = false;
     private boolean battleDebug = true;
-    private boolean temp = true;
+    private boolean temp;
     private Trainer opponentTrainer;
 
-    public KiyoiBattleScreen2(PokemonGame app) {
+    public BossBattleScreen2(PokemonGame app) {
         super(app);
         gameViewport = new ScreenViewport();
         batch = new SpriteBatch();
 
-        Texture arceus = app.getAssetManager().get("res/graphics/pokemon/arceus.png", Texture.class);
+        //Texture bulbasaur = app.getAssetManager().get("res/graphics/pokemon/bulbasaur.png", Texture.class);
+        //Texture slowpoke = app.getAssetManager().get("res/graphics/pokemon/slowpoke.png", Texture.class);
+        Texture arceus = app.getAssetManager().get("res/graphics/pokemon/bulbasaur.png", Texture.class);
+        //Texture braviary = app.getAssetManager().get("res/graphics/pokemon/magnezone.png", Texture.class);
+
 
         Trainer playerTrainer = BattleScreen.playerTrainer;
 
-        opponentTrainer.addPokemon(Pokemon.generatePokemon("God ", arceus, app.getMoveDatabase(), 30));
-
+        opponentTrainer = new Trainer(Pokemon.generatePokemon("Arceus", arceus, app.getMoveDatabase(), 25));
+        //opponentTrainer.addPokemon(Pokemon.generatePokemon("Kiyoi's Magnezone ", braviary, app.getMoveDatabase(), 10));
 
         battle = new Battle(
                 playerTrainer,
@@ -133,6 +141,9 @@ public class KiyoiBattleScreen2 extends AbstractScreen implements BattleEventPla
         /* DEBUG */
         if (temp && battle.getState() == WIN){
             kiyoi_twice_defeated = true;
+            BattleScreen.playerTrainer.addPokemon(opponentTrainer.getPokemon(0));
+            BattleScreen.addLevelPoke();
+            temp = false;
         }
         if (Gdx.input.isKeyJustPressed(Keys.F9)) {
             uiDebug = !uiDebug;
@@ -166,11 +177,38 @@ public class KiyoiBattleScreen2 extends AbstractScreen implements BattleEventPla
                 } else if (battle.getState() == STATE.READY_TO_PROGRESS) {
                     controller.restartTurn();
                 } else if (battle.getState() == WIN) {
-                    getApp().setScreen(getApp().getGameScreen());
+                    getApp().startTransition(
+                            this,
+                            getApp().getGameScreen(),
+                            new FadeOutTransition(0.8f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
+                            new FadeInTransition(0.8f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
+                            new Action(){
+                                @Override
+                                public void action() {
+                                }
+                            });
                 } else if (battle.getState() == STATE.LOSE) {
-                    getApp().setScreen(getApp().getGameScreen());
+                    getApp().startTransition(
+                            this,
+                            getApp().getGameScreen(),
+                            new FadeOutTransition(0.8f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
+                            new FadeInTransition(0.8f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
+                            new Action(){
+                                @Override
+                                public void action() {
+                                }
+                            });
                 } else if (battle.getState() == STATE.RAN) {
-                    getApp().setScreen(getApp().getGameScreen());
+                    getApp().startTransition(
+                            this,
+                            getApp().getGameScreen(),
+                            new FadeOutTransition(0.8f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
+                            new FadeInTransition(0.8f, Color.BLACK, getApp().getTweenManager(), getApp().getAssetManager()),
+                            new Action(){
+                                @Override
+                                public void action() {
+                                }
+                            });
                 }
                 break;
             } else {					// event queued up

@@ -23,6 +23,7 @@ import static com.r212.pokemon.screen.AngadBattleScreen.angad_defeated;
 import static com.r212.pokemon.screen.BradyBattleScreen.brady_defeated;
 import static com.r212.pokemon.screen.GameScreen.*;
 import static com.r212.pokemon.screen.KiyoiBattleScreen.kiyoi_defeated;
+import static com.r212.pokemon.screen.KiyoiBattleScreen2.kiyoi_twice_defeated;
 
 
 public class StorylineController extends InputAdapter {
@@ -74,7 +75,7 @@ public class StorylineController extends InputAdapter {
                     new Action(){
                         @Override
                         public void action() {
-                            System.out.println("STATUS UPDATE: A fight has started");
+                            System.out.println("STATUS UPDATE: Angad's fight has started");
                         }
                     });
         }
@@ -89,10 +90,11 @@ public class StorylineController extends InputAdapter {
                     new Action(){
                         @Override
                         public void action() {
-                            System.out.println("STATUS UPDATE: A fight has started");
+                            System.out.println("STATUS UPDATE: Brady's fight has started");
                         }
                     });
         }
+
         if ((!kiyoi_defeated && targetActor != null && targetActor.getName().equals("Kiyoi")) && dialogueBox.isFinished() && traverser != null && Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
             background.stop();
             kiyoi_battle1_music.play();
@@ -104,7 +106,22 @@ public class StorylineController extends InputAdapter {
                     new Action(){
                         @Override
                         public void action() {
-                            System.out.println("STATUS UPDATE: A fight has started");
+                            System.out.println("STATUS UPDATE: Kiyoi Part One's fight has started");
+                        }
+                    });
+        }
+        else if ((!kiyoi_twice_defeated && targetActor != null && targetActor.getName().equals("Kiyoi")) && dialogueBox.isFinished() && traverser != null && Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
+            background.stop();
+            kiyoi_battle1_music.play();
+            game.startTransition(
+                    game.getGameScreen(),
+                    new KiyoiBattleScreen(game),
+                    new FadeOutTransition(0.5f, Color.BLACK, game.getTweenManager(), game.getAssetManager()),
+                    new FadeInTransition(0.5f, Color.BLACK, game.getTweenManager(), game.getAssetManager()),
+                    new Action(){
+                        @Override
+                        public void action() {
+                            System.out.println("STATUS UPDATE: THE fight has started");
                         }
                     });
         }
